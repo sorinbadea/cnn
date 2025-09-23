@@ -1,8 +1,9 @@
-from PIL import Image
+from PIL import Image, ImageOps
 import numpy as np
 
 class ConvolutionNN:
-    def __init__(self, verbose=False):
+    def __init__(self, image_path, verbose=False):
+        self._image = Image.open(image_path)
         self._verbose = verbose
 
     def kernel_load(self, array):
@@ -10,17 +11,16 @@ class ConvolutionNN:
         self._kernel_rows = self._kernel.shape[0]
         self._kernel_cols = self._kernel.shape[1]
 
-    def image_set(self, array):
-        self._array = np.array(array)
-        self._image_rows = self._array.shape[0]
-        self._image_cols = self._array.shape[1]
-
-    def image_load(self, image_path):
-        self._image = Image.open(image_path)
-        grayscale = self._image.convert('L')
+    def image_resize(self, width=24):
+        ratio = self._image.width / width
+        self._image.thumbnail((width, int(self._image.height/ratio)), Image.Resampling.LANCZOS)
+        grayscale = ImageOps.invert(self._image.convert('L'))
+        self._image.show()
         self._array = np.array(grayscale)
         self._image_rows = self._array.shape[0]
         self._image_cols = self._array.shape[1]
+        print("initial image matrix")
+        print(self._array)
 
     def convolution2d(self):
         # Normalize image to [0, 1]
@@ -57,6 +57,13 @@ class ConvolutionNN:
         self.ReLU()
         self.print_array("Activated map", self._activated_map)
         self._pooled_map = self.max_pooling(3)
+        h_pool, w_pool = self._pooled_map.shape
+        # experimental
+        # reduce pooled map to max 9 elements
+        while h_pool * w_pool >= 9:
+            self._activated_map = self._pooled_map
+            self._pooled_map = self.max_pooling(3)
+            h_pool, w_pool = self._pooled_map.shape
         self.print_array("Pooled map", self._pooled_map)
         return self._pooled_map
 

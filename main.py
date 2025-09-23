@@ -4,11 +4,17 @@ from PIL import Image
 import filters
 
 def main(image_path):
-    conv = cnn.ConvolutionNN()
-    conv.image_load(image_path)
-    conv.kernel_load(filters.kernel_one_1)
-    conv.process()
-    conv.report()
+    conv = cnn.ConvolutionNN(image_path)
+    conv.image_resize(24)
+    kernels = [filters.kernel_one_1, filters.kernel_one_2, filters.kernel_one_3]
+    flat_layer = []
+    for kernel in kernels:
+        conv.kernel_load(kernel)
+        pooled = conv.process()
+        flat_layer.append(pooled)
+        print("Pooled output for kernel:", len(flat_layer))
+        print(pooled)
+    
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
