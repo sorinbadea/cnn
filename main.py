@@ -1,12 +1,11 @@
 import cnn
 import sys
 import os
-import cv2
 from PIL import Image
 import filters
 
-POOL_SIZE = 3
-POOL_STRIDE = 2
+POOL_SIZE = 4
+POOL_STRIDE = 3
 REDUCED_WIDTH = 20
 def get_files_from_directory(directory):
     """
@@ -17,15 +16,6 @@ def get_files_from_directory(directory):
     for f in files_only:
         yield f
 
-def edge_image(image_file):
-    try:
-        img = cv2.imread(image_file, cv2.IMREAD_GRAYSCALE)
-        edge_image = cv2.Canny(img, 30, 170)
-        cv2.imwrite('tmp/edge.jpeg', edge_image)
-    except Exception as e:
-        print(f"Unexpected error opening image: {e}")
-        exit(1)
-
 def process(image_path, debug=False):
     """
     process the image loaded from image_path
@@ -35,9 +25,10 @@ def process(image_path, debug=False):
     conv = cnn.ConvolutionNN(image_path, debug)
     conv.image_resize(REDUCED_WIDTH)
     flat_layer = []
-    for key in filters.kernels_digit_one:
-        conv.kernel_load(filters.kernels_digit_one[key])
-        pooled = conv.process(POOL_SIZE, POOL_STRIDE)
+    for key in filters.kernels_digit_one['filters']:
+        conv.kernel_load(filters.kernels_digit_one['filters'][key])
+        pooled = conv.process(filters.kernels_digit_one['pool_size'],
+                              filters.kernels_digit_one['stride'])
         flat_layer.append(pooled)
         print("Pooled output for kernel:", len(flat_layer))
         print(pooled)

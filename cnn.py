@@ -37,13 +37,13 @@ class ConvolutionNN:
         apply the convolution algorith to the image
         """
         # Normalize image to [0, 1]
-        normalized_array = np.round(self._array / 255, 2)
+        normalized_array = np.round(self._array/255, 2)
         feature_map = np.zeros((self._image_rows - self._kernel_rows + 1, self._image_cols - self._kernel_cols + 1))
         for i in range(self._image_rows - self._kernel_rows + 1):
             for j in range(self._image_cols - self._kernel_cols + 1):
                 # Element-wise multiplication and sum
                 conv_value = np.sum(normalized_array[i:i+self._kernel_rows, j:j+self._kernel_cols] * self._kernel)
-                feature_map[i , j] = conv_value
+                feature_map[i , j] = np.round(conv_value, 2)
         self._feature_map = feature_map
 
     def ReLU(self):
@@ -86,6 +86,8 @@ class ConvolutionNN:
         self.print_array("Pooled map", self._pooled_map)
         while h_pool * w_pool > 4:
             self._activated_map = self._pooled_map
+            if pool_size > 2:
+                pool_size -= 1
             self._pooled_map = self.max_pooling(pool_size, pool_stride)
             self.print_array("Pooled map", self._pooled_map)
             h_pool, w_pool = self._pooled_map.shape
