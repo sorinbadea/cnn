@@ -37,7 +37,7 @@ class ConvolutionNN:
     def run_convolution(self, normalized_array):
         """
         generator to apply the convolution algorithm
-        #param : normalized_array: input image normalized to [0, 1]
+        @param : normalized_array: input image normalized to [0, 1]
         """
         for i in range(self._image_rows - self._kernel_rows + 1):
             for j in range(self._image_cols - self._kernel_cols + 1):
@@ -91,19 +91,17 @@ class ConvolutionNN:
         self._pooled_map = self.max_pooling2d(pool_size, pool_stride)
         self.print_array("Pooled map", self._pooled_map)
 
-        """
-        reduce pooled map to max 9 elements
-        """
         h_pool, w_pool = self._pooled_map.shape
-        while w_pool > 3 and h_pool > 3:
+        while w_pool > 5:
             """
-            limit the pooled map to max 3x3 elements
+            limit the pooled map to max n x 2 elements
             """
+            if w_pool == 5:
+                pool_stride = 2
             self._activated_map = self._pooled_map
             """
             re-apply max pooling
             """
-            self._pooled_map = self.max_pooling2d(3, 3)
-            self.print_array("Pooled map", self._pooled_map)
+            self._pooled_map = self.max_pooling2d(pool_size, pool_stride)
             h_pool, w_pool = self._pooled_map.shape
         return self._pooled_map

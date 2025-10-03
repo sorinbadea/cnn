@@ -15,15 +15,22 @@ class DataBaseInterface():
         self._cursor = None
 
     def database_connect(self):
-        self._connection = psycopg2.connect(
-            host=self._host,
-            database=self._database,
-            user=self._user,
-            password=self._password,
-            port=self._port,
-            connect_timeout=5
-        )
-        self._cursor = self._connection.cursor()
+        try:
+            self._connection = psycopg2.connect(
+                host=self._host,
+                database=self._database,
+                user=self._user,
+                password=self._password,
+                port=self._port,
+                connect_timeout=5
+            )
+            self._cursor = self._connection.cursor()
+        except psycopg2.OperationalError as e:
+            print(f"❌ Cannot connect to database: {e}")
+            return False
+        except Exception as e:
+            print(f"❌ Unexpected error: {e}")
+            return False
 
     def database_disconnect(self):
         if self._cursor:
@@ -41,10 +48,10 @@ class DataBaseInterface():
             return rows
         except psycopg2.OperationalError as e:
             print(f"❌ Cannot connect to database: {e}")
-            return None
+            return False
         except Exception as e:
             print(f"❌ Unexpected error: {e}")
-            return None
+            return False
 
     def insert_data(self, table_name, data):
         try:
@@ -91,8 +98,5 @@ if __name__ == "__main__":
         if array:
             for row in array:
                 print("-----------------")
-                np_array = np.array(row)
-                i, height, width = np_array.shape
-                print("shape:", np_array.shape)
-                for item in np_array:
-                    print(item)
+                for item in row:
+                        print(item)
