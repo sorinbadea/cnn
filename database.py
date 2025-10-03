@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import psycopg2
 import sys
+import numpy as np
 import filters
 
 class DataBaseInterface():
@@ -24,13 +25,17 @@ class DataBaseInterface():
         )
         self._cursor = self._connection.cursor()
 
+    def database_disconnect(self):
+        if self._cursor:
+            self._cursor.close()
+        if self._connection:
+            self._connection.close()
+
     def get_data(self, table_name):
         try:
             self.database_connect()
-            self._cursor.execute("SELECT * FROM " + table_name)
+            self._cursor.execute("SELECT samples FROM " + table_name)
             rows = self._cursor.fetchall()
-            print(f"Total rows in table: {len(rows)}")
-            print(rows)
             self._cursor.close()
             self._connection.close()
             return rows
@@ -79,4 +84,15 @@ class DataBaseInterface():
 if __name__ == "__main__":
     db = DataBaseInterface('localhost','myapp','postgres','password',5432)
     for key in filters.kernels_digit_one['filters']:
-        db.get_data(key)
+        print("")
+        print("filter:", key)
+        print("")
+        array = db.get_data(key)
+        if array:
+            for row in array:
+                print("-----------------")
+                np_array = np.array(row)
+                i, height, width = np_array.shape
+                print("shape:", np_array.shape)
+                for item in np_array:
+                    print(item)

@@ -4,12 +4,14 @@ import os
 from PIL import Image
 import filters
 from database import DataBaseInterface
+from analyzer import evaluate
 
 REDUCED_WIDTH = 24
 
 def usage():
-    print("Usage python main.py -f [image file]")
-    print("      python main.py -d [folder_with images]")
+    print("Usage python main.py -f [image file], debug image processing")
+    print("      python main.py -d [folder_with images], train the model")
+    print("      python main.py -a [image file], try to find a match in the database")
 
 def get_files_from_directory(directory):
     """
@@ -29,18 +31,22 @@ def process(image_path, verbosity, db=None):
     @param: db: database interface
     """
     conv = cnn.ConvolutionNN(image_path, verbosity)
-    conv.image_resize(REDUCED_WIDTH)
+    #conv.image_resize(REDUCED_WIDTH)
     conv.grayscale()
+    pooled_maps = []
     kernel_hash = filters.kernels_digit_one['filters']
     for (key, i) in zip (kernel_hash, range(len(kernel_hash))):
         conv.kernel_load(kernel_hash[key])
         pooled = conv.process(filters.kernels_digit_one['pool_size'],
                               filters.kernels_digit_one['stride'])
-        print("Pooled output for kernel:", i)
-        print(pooled)
+        if verbosity:
+            print("Pooled output for kernel:", i)
+            print(pooled)
+        pooled_maps.append(pooled)
         # save in database
         if db:
             db.insert_data(key, pooled.tolist())
+    return pooled_maps
         
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -51,6 +57,17 @@ if __name__ == "__main__":
                 """
                 image_path = sys.argv[2]
                 process(image_path, True)
+
+            elif sys.argv[1] == "-a":
+                image_path = sys.argv[2]
+                pooled_maps = process(image_path, False)
+                print("=== Resulted pooled maps ===")
+                for pooled in pooled_maps:
+                    print(pooled)
+                """
+                call the analyzer module
+                """
+                evaluate(pooled_maps)
 
             elif sys.argv[1] == "-d":
                 image_path = sys.argv[2]
@@ -66,6 +83,7 @@ if __name__ == "__main__":
                 for image in get_files_from_directory(image_path):
                     print("Processing image:", image)
                     process(image_path + "/" + image, False, db)
+                db.database_disconnect()
 
             else:
                 usage()

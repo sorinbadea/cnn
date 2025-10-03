@@ -1,5 +1,6 @@
 from PIL import Image, ImageOps
 import numpy as np
+from tensorflow.keras.layers import MaxPooling2D
 
 class ConvolutionNN:
     def __init__(self, image_path, verbose=False):
@@ -52,32 +53,27 @@ class ConvolutionNN:
         normalized_array = np.round(self._array/255, 2)
         for i, j, conv in self.run_convolution(normalized_array):
                 feature_map[i , j] = np.round(conv, 2)
-        self._feature_map = feature_map
-
-    def ReLU(self):
-        self._activated_map = np.maximum(0, self._feature_map)
-
-    def max_pooling(self, size=3, stride=2):
-        """
-        apply the max pooling step, retrive the maximum value from
-        the featured map (convolution result)
-        """
-        rows, cols = self._activated_map.shape
-        pooled_rows = (rows - size) // stride + 1
-        pooled_cols = (cols - size) // stride + 1
-        pooled_map = np.zeros((pooled_rows, pooled_cols))
-        for i in range(pooled_rows):
-            for j in range(pooled_cols):
-                pooled_map[i, j] = np.max(
-                    self._activated_map[i * stride: i * stride + size, j * stride : j * stride + size]
-                )
-        return pooled_map
+        return feature_map
 
     def print_array(self, text, array):
         if self._verbose:
             print("------" + text + "------- height ", array.shape[0], " width ", array.shape[1])
             print(array)
 
+    def max_pooling2d(self, pool_size, pool_stride):
+        """
+        apply max pooling to the activated map usinbg the keras layer
+        @pool_size: the size, (width and height) of the pooling array
+        @pool_stride: value to shift on the right and down on each step of max pooling
+        """
+        h, w = self._activated_map.shape
+        self._activated_map = self._activated_map.reshape(1, h, w, 1)
+        max_pool = MaxPooling2D(pool_size=(pool_size, pool_size), strides=pool_stride, padding='same')
+        pooled_map = max_pool(self._activated_map)
+        batch, h_pool, w_pool, channels = pooled_map.shape
+        pooled_map = pooled_map.numpy().squeeze()
+        return pooled_map
+        
     def process(self, pool_size, pool_stride):
         """
         apply the following on an image:
@@ -85,27 +81,29 @@ class ConvolutionNN:
         @pool_size: the size, (width and height) of the pooling array
         @pool_stride: value to shift on the right and down on each step of max pooling
         """
-    
-        self.convolution2d()
+        self._feature_map = self.convolution2d()
         self.print_array("Feature map", self._feature_map)
-        self.ReLU()
+    
+        # apply RE LU activation function
+        self._activated_map = np.maximum(0, self._feature_map)
         self.print_array("Activated map", self._activated_map)
 
-        self._pooled_map = self.max_pooling(pool_size, pool_stride)
-        h_pool, w_pool = self._pooled_map.shape
-
+        self._pooled_map = self.max_pooling2d(pool_size, pool_stride)
         self.print_array("Pooled map", self._pooled_map)
+
         """
         reduce pooled map to max 9 elements
         """
-        while h_pool * w_pool >= 9:
+        h_pool, w_pool = self._pooled_map.shape
+        while w_pool > 3 and h_pool > 3:
+            """
+            limit the pooled map to max 3x3 elements
+            """
             self._activated_map = self._pooled_map
-            if pool_size > 2:
-               pool_size -= 1
             """
-            re-apply max pooling with smaller pool size
+            re-apply max pooling
             """
-            self._pooled_map = self.max_pooling(pool_size, pool_stride)
+            self._pooled_map = self.max_pooling2d(3, 3)
             self.print_array("Pooled map", self._pooled_map)
             h_pool, w_pool = self._pooled_map.shape
         return self._pooled_map
