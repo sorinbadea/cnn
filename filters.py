@@ -1,5 +1,7 @@
+
 # 1 shape kernels to detect digit "1"
 kernels_digit_one = {
+    'name' : "digit \'1\'",
     'pool_size' : 3,
     'stride' : 3,
     'filters' :
@@ -10,9 +12,9 @@ kernels_digit_one = {
                             [ -1,  2,  2, -1]],
 
         'digit_1_filter_2': [[-1, -1,  2, 2],
-                            [ -1,  2,  2, 2],
-                            [  2,  2, -1, 2],
-                            [  2, -1, -1, 2]],
+                            [ -1,  2, -1, 2],
+                            [  2, -1, -1, 2],
+                            [ -1, -1, -1, 2]],
 
         'digit_1_filter_3': [[-1, -1,  2,  2],
                             [ -1,  2,  2, -1],
@@ -25,5 +27,7 @@ kernels_digit_one = {
                             [ 2,   2,  2,  2]]
     }
 }
+
+kernels = [ kernels_digit_one ]
 
  

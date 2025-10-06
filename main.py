@@ -22,7 +22,7 @@ def get_files_from_directory(directory):
     for f in files_only:
         yield f
 
-def process(image_path, verbosity):
+def process(image_path, kernel_set, verbosity):
     """
     Process the image loaded from image_path;
     returns a map of pooled outputs for each kernel shape
@@ -34,7 +34,7 @@ def process(image_path, verbosity):
         conv.image_resize(REDUCED_WIDTH)
         conv.grayscale()
         pooled_maps = {}
-        kernel_hash = filters.kernels_digit_one['filters']
+        kernel_hash = filters.kernels[kernel_set]['filters']
         for (key, i) in zip (kernel_hash, range(len(kernel_hash))):
             conv.kernel_load(kernel_hash[key])
             # run the convolution algorithm per kernel
@@ -66,43 +66,46 @@ if __name__ == "__main__":
             single image processing mode
             """
             image_path = sys.argv[2]
-            pooled_map = process(image_path, True)
-            for key in pooled_map:
-                print("Pooled output for kernel:", key)
-                for row in pooled_map[key]:
-                    print(row)
+            for kernel_set in range(len(filters.kernels)):
+                pooled_map = process(image_path, kernel_set, True)
+                for key in pooled_map:
+                    print("Pooled output for kernel:", key)
+                    for row in pooled_map[key]:
+                        print(row)
             print("Processing completed.")
 
         elif sys.argv[1] == "-a":
             image_path = sys.argv[2]
-            pooled_map = process(image_path, False)
-
-            """
-            call the analyzer module
-            """
-            results = ana.evaluate(pooled_map, True)
-            ana.evaluate_results(results)
-
+            for kernel_set in range(len(filters.kernels)):
+                pooled_map = process(image_path, kernel_set, False)
+                """
+                call the analyzer module
+                """
+                results = ana.evaluate(pooled_map, True)
+                print(f"Confidence result {results} % for {filters.kernels[kernel_set]['name']}")
+            
         elif sys.argv[1] == "-d":
             image_path = sys.argv[2]
             """
             training mode, update a table with pooled data for each kernel shape
             """
             db = data.DataBaseInterface('localhost','myapp','postgres','password',5432)
-            for key in filters.kernels_digit_one['filters']:
-                if db.create_table(key) is False:
-                    print(f"❌ Error creating table '{key}', exit training process")
-                    sys.exit(1)
+            for kernel_set in range(len(filters.kernels)):
+                for key in filters.kernels[kernel_set]['filters']:
+                    if db.create_table(key) is False:
+                        print(f"❌ Error creating table '{key}', exit training process")
+                        sys.exit(1)
             """
             start processing all images in the specified folder
             """
             for image in get_files_from_directory(image_path):
                 print("Processing image:", image)
-                polled_map = process(image_path + "/" + image, False)
-                for key in polled_map:
-                    for row in polled_map[key]:
-                        # convert from numpy array to list
-                        db.insert_data(key, row.tolist())
+                for kernel_set in range(len(filters.kernels)):
+                    polled_map = process(image_path + "/" + image, kernel_set, False)
+                    for key in polled_map:
+                        for row in polled_map[key]:
+                            # convert from numpy array to list
+                            db.insert_data(key, row.tolist())
             db.database_disconnect()
         else:
             usage()
