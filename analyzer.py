@@ -24,22 +24,6 @@ def iterate_in_samples(trained_filter, input_pooled):
         for train_row in trained_filter:
             yield pool_row, train_row
 
-def evaluate_results(results, verbose = False):
-    """
-    overall result evaluation
-    returns True if at least 75% of filters have matches
-    """
-    print("=== Overall evaluation result ===")
-    if results is None:
-        print(f"❌ No results")
-        return False
-    matches = [ results[key][0] for key in results ]
-    match_per_filter = sum(1 for m in matches if m > 0)
-    if verbose:
-        for m, key in zip(matches, results):
-            print(f"matches: {results[key][0]} for filer '{key}'")
-    return (match_per_filter/len(results) * 100)
-
 def evaluate_filter(trained_filter, input_pooled, verbose=False):
     """
     Evaluates a single pooled filter result against trained 
@@ -72,7 +56,11 @@ def evaluate(pooled_maps, verbose=False):
         else:
             result[key] = evaluate_filter(trained_filter, pooled_maps[key], verbose)
     db.database_disconnect()
-    return evaluate_results(result, verbose)
+    print("=== Overall evaluation result ===")
+    matches = [ result[key][0] for key in result ]
+    total_matches = sum(1 for m in matches if m > 0)
+    print(f"Match statistics for each filter: {matches}")
+    return (total_matches/len(result) * 100)
 
 if __name__ == "__main__":
     # Usage, is_match_distance function

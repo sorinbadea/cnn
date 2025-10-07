@@ -28,6 +28,39 @@ kernels_digit_one = {
     }
 }
 
-kernels = [ kernels_digit_one ]
+kernels_digit_two = {
+    'name' : "digit \'2\'",
+    'pool_size' : 3,
+    'stride' : 3,
+    'filters' :
+    {
+        'digit_2_filter_1': [[ -1,  2,  2, -1],
+                            [   2,  2,  2, -1],
+                            [   2,  2, -1, -1],
+                            [   2, -1, -1, -1]],
+
+        'digit_2_filter_2': [[-1,  2,  2, -1],
+                            [ -1,  2,  2,  2],
+                            [ -1, -1,  2,  2],
+                            [ -1, -1, -1,  2]],
+
+        'digit_2_filter_3': [[-1, -1, -1, -1],
+                            [ -1, -1,  2,  2],
+                            [ -1, -1,  2,  2],
+                            [ -1,  2,  2, -1]],
+
+        'digit_2_filter_4': [[-1, -1,  2, -1],
+                            [ -1,  2,  2, -1],
+                            [ -1,  2,  2, -1],
+                            [  2,  2, -1, -1]],
+
+        'digit_2_filter_5': [[ -1, -1, -1, -1],
+                             [ -1, -1, -1, -1],
+                             [ 2,   2,  2,  2],
+                             [ 2,   2,  2,  2]]
+    }
+}
+
+kernels = [ kernels_digit_one, kernels_digit_two ]
 
  

@@ -10,8 +10,9 @@ REDUCED_WIDTH = 48
 
 def usage():
     print("Usage python main.py -f [image file], debug image processing")
-    print("      python main.py -d [folder_with images], train the model")
+    print("      python main.py -d [folder_with images] [element to train] train the model")
     print("      python main.py -a [image file], analyse mode")
+    sys.exit(1)
 
 def get_files_from_directory(directory):
     """
@@ -21,6 +22,22 @@ def get_files_from_directory(directory):
     files_only = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
     for f in files_only:
         yield f
+
+def get_kernel_set_name():
+    """
+    returns the index of the kernel set to use for training
+    based on the element name provided as command line argument
+    e.g. "digit '1'"
+    """
+    if len(sys.argv) < 4:
+        usage()
+    element_to_match = sys.argv[3]
+    for kernel_set in range(len(filters.kernels)):
+        if filters.kernels[kernel_set]['name'] == element_to_match:
+            print(f"Training mode for element '{element_to_match}'")
+            return kernel_set
+    print(f"Error: element to train '{element_to_match}' not found")
+    usage()
 
 def process(image_path, kernel_set, verbosity):
     """
@@ -60,7 +77,7 @@ def process(image_path, kernel_set, verbosity):
     print("processing image stopped")
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
         if sys.argv[1] == "-f":
             """
             single image processing mode
@@ -89,23 +106,22 @@ if __name__ == "__main__":
             """
             training mode, update a table with pooled data for each kernel shape
             """
+            kernel_set = get_kernel_set_name()
             db = data.DataBaseInterface('localhost','myapp','postgres','password',5432)
-            for kernel_set in range(len(filters.kernels)):
-                for key in filters.kernels[kernel_set]['filters']:
-                    if db.create_table(key) is False:
-                        print(f"❌ Error creating table '{key}', exit training process")
-                        sys.exit(1)
+            for key in filters.kernels[kernel_set]['filters']:
+                if db.create_table(key) is False:
+                    print(f"❌ Error creating table '{key}', exit training process")
+                    sys.exit(1)
             """
             start processing all images in the specified folder
             """
             for image in get_files_from_directory(image_path):
                 print("Processing image:", image)
-                for kernel_set in range(len(filters.kernels)):
-                    polled_map = process(image_path + "/" + image, kernel_set, False)
-                    for key in polled_map:
-                        for row in polled_map[key]:
-                            # convert from numpy array to list
-                            db.insert_data(key, row.tolist())
+                polled_map = process(image_path + "/" + image, kernel_set, False)
+                for key in polled_map:
+                    for row in polled_map[key]:
+                        # convert from numpy array to list
+                        db.insert_data(key, row.tolist())
             db.database_disconnect()
         else:
             usage()
