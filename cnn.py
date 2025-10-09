@@ -9,7 +9,7 @@ class ConvolutionNN:
 
     def kernel_load(self, array):
         """
-        load a speciffic filter or kernel
+        load a specific filter or kernel
         @array: kernel pattern
         """
         self._kernel = np.array(array)
@@ -62,7 +62,7 @@ class ConvolutionNN:
 
     def max_pooling2d(self, pool_size, pool_stride):
         """
-        apply max pooling to the activated map usinbg the keras layer
+        apply max pooling to the activated map using the keras layer
         @pool_size: the size, (width and height) of the pooling array
         @pool_stride: value to shift on the right and down on each step of max pooling
         """
@@ -70,7 +70,6 @@ class ConvolutionNN:
         self._activated_map = self._activated_map.reshape(1, h, w, 1)
         max_pool = MaxPooling2D(pool_size=(pool_size, pool_size), strides=pool_stride, padding='same')
         pooled_map = max_pool(self._activated_map)
-        batch, h_pool, w_pool, channels = pooled_map.shape
         pooled_map = pooled_map.numpy().squeeze()
         return pooled_map
         
@@ -93,11 +92,6 @@ class ConvolutionNN:
 
         h_pool, w_pool = self._pooled_map.shape
         while w_pool > 5:
-            """
-            limit the pooled map to max n x 2 elements
-            """
-            if w_pool == 5:
-                pool_stride = 2
             self._activated_map = self._pooled_map
             """
             re-apply max pooling

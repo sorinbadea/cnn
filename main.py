@@ -9,9 +9,9 @@ import analyzer as ana
 REDUCED_WIDTH = 48
 
 def usage():
-    print("Usage python main.py -f [image file], debug image processing")
+    print("Usage python main.py -f [image file], debug image processing steps")
     print("      python main.py -d [folder_with images] [element to train] train the model")
-    print("      python main.py -a [image file], analyse mode")
+    print("      python main.py -a [image file], analyse mode, run all the filters and output a confidence percent")
     sys.exit(1)
 
 def get_files_from_directory(directory):
@@ -52,13 +52,13 @@ def process(image_path, kernel_set, verbosity):
         conv.grayscale()
         pooled_maps = {}
         kernel_hash = filters.kernels[kernel_set]['filters']
-        for (key, i) in zip (kernel_hash, range(len(kernel_hash))):
+        for key, i in zip (kernel_hash, range(len(kernel_hash))):
             conv.kernel_load(kernel_hash[key])
             # run the convolution algorithm per kernel
-            pooled = conv.process(filters.kernels_digit_one['pool_size'],
-                                filters.kernels_digit_one['stride'])
+            pooled = conv.process(filters.kernels[kernel_set]['pool_size'],
+                                filters.kernels[kernel_set]['stride'])
             if verbosity:
-                print("pooled output for kernel:", i)
+                print("pooled for kernel:", i+1)
                 print(pooled)
             pooled_maps[key] = pooled
         return pooled_maps
@@ -84,10 +84,12 @@ if __name__ == "__main__":
             """
             image_path = sys.argv[2]
             for kernel_set in range(len(filters.kernels)):
-                pooled_map = process(image_path, kernel_set, True)
+                print("kernel set ", kernel_set)
+                pooled_map = process(image_path, kernel_set, False)
+                # display results
                 for key in pooled_map:
-                    print("Pooled output for kernel:", key)
-                    for row in pooled_map[key]:
+                   print("Pooled output for kernel:", key)
+                   for row in pooled_map[key]:
                         print(row)
             print("Processing completed.")
 
@@ -99,7 +101,7 @@ if __name__ == "__main__":
                 call the analyzer module
                 """
                 results = ana.evaluate(pooled_map, True)
-                print(f"Confidence result {results} % for {filters.kernels[kernel_set]['name']}")
+                print(f"Confidence result {round(results)} % for {filters.kernels[kernel_set]['name']}")
             
         elif sys.argv[1] == "-d":
             image_path = sys.argv[2]
