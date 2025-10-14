@@ -44,6 +44,7 @@ def process(image_path, kernel_set, verbosity):
     Process the image loaded from image_path;
     returns a map of pooled outputs for each kernel shape
     @param image_path : image location
+    @kernel_set: kernel or filter to apply
     @param verbosity: enable verbosity
     """
     try:
@@ -63,7 +64,7 @@ def process(image_path, kernel_set, verbosity):
             pooled_maps[key] = pooled
         return pooled_maps
         """
-        exception handling for file operations
+        exception handling
         """
     except FileNotFoundError:
         print(f"Error: File '{image_path}' not found")
@@ -73,7 +74,7 @@ def process(image_path, kernel_set, verbosity):
     except PermissionError:
         print(f"Error: Permission denied accessing '{image_path}'")
     except Exception as e:
-        print(f"Unexpected error opening image: {e}")
+        print(f"Unexpected exception: {e}")
     print("processing image stopped")
 
 if __name__ == "__main__":
@@ -95,13 +96,24 @@ if __name__ == "__main__":
 
         elif sys.argv[1] == "-a":
             image_path = sys.argv[2]
+            # hash of known patter; (digit1, house) and nb of matches/total kernels
+            match_ratio = {}
             for kernel_set in range(len(filters.kernels)):
                 pooled_map = process(image_path, kernel_set, False)
                 """
                 call the analyzer module
                 """
-                results = ana.evaluate(pooled_map, True)
-                print(f"Confidence result {round(results)} % for {filters.kernels[kernel_set]['name']}")
+                result = ana.evaluate(pooled_map, True)
+                match_ratio[filters.kernels[kernel_set]['name']] = result
+                print(f"Confidence result {round(result * 100)} % for {filters.kernels[kernel_set]['name']}")
+            """
+            get the maximum match from all tried filters
+            """
+            match_max = max(match_ratio, key=match_ratio.get)
+            if round(match_ratio[match_max] * 100) < 66:
+                print("unknown pattern, confidence result ", round(match_ratio[match_max] * 100), "%")
+            else:
+                print(match_max, " with a confidence of ", round(match_ratio[match_max] * 100), "%")
             
         elif sys.argv[1] == "-d":
             image_path = sys.argv[2]

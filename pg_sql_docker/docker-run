@@ -1,0 +1,11 @@
+#!/bin/bash
+docker run -d \
+  --name postgres_db \
+  -e POSTGRES_DB=myapp \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=password \
+  -p 5432:5432 \
+  -v postgres_data:/var/lib/postgresql/data \
+ postgres_db
+
+#docker exec -it postgres_db psql -U postgres

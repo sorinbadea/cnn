@@ -48,12 +48,12 @@ class ConvolutionNN:
         """
         apply the convolution algorith to the image
         """
-        feature_map = np.zeros((self._image_rows - self._kernel_rows + 1, self._image_cols - self._kernel_cols + 1))
+        self._feature_map = np.zeros((self._image_rows - self._kernel_rows + 1, self._image_cols - self._kernel_cols + 1))
         # Normalize image to [0, 1]
         normalized_array = np.round(self._array/255, 2)
         for i, j, conv in self.run_convolution(normalized_array):
-                feature_map[i , j] = np.round(conv, 2)
-        return feature_map
+                self._feature_map[i , j] = np.round(conv, 2)
+        return self._feature_map
 
     def print_array(self, text, array):
         if self._verbose:
@@ -98,4 +98,5 @@ class ConvolutionNN:
             """
             self._pooled_map = self.max_pooling2d(pool_size, pool_stride)
             h_pool, w_pool = self._pooled_map.shape
+
         return self._pooled_map

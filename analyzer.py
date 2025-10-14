@@ -11,9 +11,12 @@ def euclidean_distance(vec1, vec2):
     """Calculate Euclidean distance between two vectors"""
     return np.sqrt(np.sum((np.array(vec1) - np.array(vec2)) ** 2))
 
-def is_match_distance(new_values, trained_values, threshold=0.5):
+def is_match_distance(new_values, trained_values):
     """Check if new values match within distance threshold"""
     distance = euclidean_distance(new_values, trained_values)
+    # try to evaluate an appropiate threshold
+    nv_average = np.sum(np.array(new_values))/len(new_values)
+    threshold = nv_average * 0.1
     return distance < threshold, distance
 
 def iterate_in_samples(trained_filter, input_pooled):
@@ -34,7 +37,7 @@ def evaluate_filter(trained_filter, input_pooled, verbose=False):
     matches = 0
     not_matches = 0
     for pool_row, train_row in iterate_in_samples(trained_filter, input_pooled):
-        match, distance = is_match_distance(pool_row, train_row, threshold=0.6)
+        match, distance = is_match_distance(pool_row, train_row)
         if match:
             matches += 1
         else:
@@ -56,11 +59,9 @@ def evaluate(pooled_maps, verbose=False):
         else:
             result[key] = evaluate_filter(trained_filter, pooled_maps[key], verbose)
     db.database_disconnect()
-    print("=== Overall evaluation result ===")
     matches = [ result[key][0] for key in result ]
     total_matches = sum(1 for m in matches if m > 0)
-    print(f"Match statistics for each filter: {matches}")
-    return (total_matches/len(result) * 100)
+    return total_matches/len(result)
 
 if __name__ == "__main__":
     # Usage, is_match_distance function
