@@ -90,13 +90,13 @@ class DataBaseInterface():
 
 if __name__ == "__main__":
     db = DataBaseInterface('localhost','myapp','postgres','password',5432)
-    for key in filters.kernels_digit_one['filters']:
-        print("")
-        print("filter:", key)
-        print("")
-        array = db.get_data(key)
-        if array:
-            for row in array:
-                print("-----------------")
-                for item in row:
-                        print(item)
+    for shape_index in range(len(filters.shapes)):
+        for key in filters.shapes[shape_index]['filters']:
+            print("")
+            array = db.get_data(key)
+            if array:
+                print("filter:", key)
+                for row in array:
+                    print("-----------------")
+                    for item in row:
+                            print(item)

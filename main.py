@@ -6,7 +6,7 @@ import filters
 import database as data
 import analyzer as ana
 
-REDUCED_WIDTH = 48
+REDUCED_WIDTH = 128
 
 def usage():
     print("Usage python main.py -f [image file], debug image processing steps")
@@ -23,7 +23,7 @@ def get_files_from_directory(directory):
     for f in files_only:
         yield f
 
-def get_kernel_set_name():
+def get_shape_name():
     """
     returns the index of the kernel set to use for training
     based on the element name provided as command line argument
@@ -32,40 +32,18 @@ def get_kernel_set_name():
     if len(sys.argv) < 4:
         usage()
     element_to_match = sys.argv[3]
-    for kernel_set in range(len(filters.kernels)):
-        if filters.kernels[kernel_set]['name'] == element_to_match:
+    for shape_index in range(len(filters.shapes)):
+        if filters.shapes[shape_index]['name'] == element_to_match:
             print(f"Training mode for element '{element_to_match}'")
-            return kernel_set
+            return shape_index
     print(f"Error: element to train '{element_to_match}' not found")
     usage()
 
-def process(image_path, kernel_set, verbosity):
-    """
-    Process the image loaded from image_path;
-    returns a map of pooled outputs for each kernel shape
-    @param image_path : image location
-    @kernel_set: kernel or filter to apply
-    @param verbosity: enable verbosity
-    """
+def get_cnn_instance(image_path, verbosity):
     try:
         conv = cnn.ConvolutionNN(image_path, verbosity)
-        conv.image_resize(REDUCED_WIDTH)
-        conv.grayscale()
-        pooled_maps = {}
-        kernel_hash = filters.kernels[kernel_set]['filters']
-        for key, i in zip (kernel_hash, range(len(kernel_hash))):
-            conv.kernel_load(kernel_hash[key])
-            # run the convolution algorithm per kernel
-            pooled = conv.process(filters.kernels[kernel_set]['pool_size'],
-                                filters.kernels[kernel_set]['stride'])
-            if verbosity:
-                print("pooled for kernel:", i+1)
-                print(pooled)
-            pooled_maps[key] = pooled
-        return pooled_maps
-        """
-        exception handling
-        """
+        conv.pre_processing(REDUCED_WIDTH)
+        return conv
     except FileNotFoundError:
         print(f"Error: File '{image_path}' not found")
         # Handle the error (set default, raise custom exception, etc.)
@@ -76,6 +54,32 @@ def process(image_path, kernel_set, verbosity):
     except Exception as e:
         print(f"Unexpected exception: {e}")
     print("processing image stopped")
+    return None
+
+def process(shape_index, conv, verbosity):
+    """
+    Process the image loaded from image_path;
+    returns a map of pooled outputs for each kernel shape
+    @param image_path : image location
+    @kernel_set: kernel or filter to apply
+    @param verbosity: enable verbosity
+    """
+    try:
+        pooled_maps = {}
+        kernel_hash = filters.shapes[shape_index]['filters']
+        for key, i in zip (kernel_hash, range(len(kernel_hash))):
+            conv.kernel_load(kernel_hash[key])
+            # run the convolution algorithm per kernel
+            pooled = conv.process(filters.shapes[shape_index]['pool_size'],
+                                filters.shapes[shape_index]['stride'])
+            if verbosity:
+                print("pooled for kernel:", i+1)
+                print(pooled)
+            pooled_maps[key] = pooled
+        return pooled_maps
+    except Exception as e:
+        print(f"Unexpected exception: {e}")
+        return None
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
@@ -84,9 +88,10 @@ if __name__ == "__main__":
             single image processing mode
             """
             image_path = sys.argv[2]
-            for kernel_set in range(len(filters.kernels)):
-                print("kernel set ", kernel_set)
-                pooled_map = process(image_path, kernel_set, False)
+            conv = get_cnn_instance(image_path, True)
+            for shape_index in range(len(filters.shapes)):
+                print("shape index ", shape_index + 1)
+                pooled_map = process(shape_index, conv, True)
                 # display results
                 for key in pooled_map:
                    print("Pooled output for kernel:", key)
@@ -98,19 +103,20 @@ if __name__ == "__main__":
             image_path = sys.argv[2]
             # hash of known patter; (digit1, house) and nb of matches/total kernels
             match_ratio = {}
-            for kernel_set in range(len(filters.kernels)):
-                pooled_map = process(image_path, kernel_set, False)
+            conv = get_cnn_instance(image_path, False)
+            for shape_index in range(len(filters.shapes)):
+                pooled_map = process(shape_index, conv, False)
                 """
                 call the analyzer module
                 """
-                result = ana.evaluate(pooled_map, True)
-                match_ratio[filters.kernels[kernel_set]['name']] = result
-                print(f"Confidence result {round(result * 100)} % for {filters.kernels[kernel_set]['name']}")
+                result = ana.evaluate(pooled_map, shape_index, False)
+                match_ratio[filters.shapes[shape_index]['name']] = result
+                print(f"Confidence result {round(result * 100)} % for {filters.shapes[shape_index]['name']}")
             """
             get the maximum match from all tried filters
             """
             match_max = max(match_ratio, key=match_ratio.get)
-            if round(match_ratio[match_max] * 100) < 66:
+            if round(match_ratio[match_max] * 100) < 67:
                 print("unknown pattern, confidence result ", round(match_ratio[match_max] * 100), "%")
             else:
                 print(match_max, " with a confidence of ", round(match_ratio[match_max] * 100), "%")
@@ -120,9 +126,9 @@ if __name__ == "__main__":
             """
             training mode, update a table with pooled data for each kernel shape
             """
-            kernel_set = get_kernel_set_name()
+            shape_index = get_shape_name()
             db = data.DataBaseInterface('localhost','myapp','postgres','password',5432)
-            for key in filters.kernels[kernel_set]['filters']:
+            for key in filters.shapes[shape_index]['filters']:
                 if db.create_table(key) is False:
                     print(f"❌ Error creating table '{key}', exit training process")
                     sys.exit(1)
@@ -130,8 +136,9 @@ if __name__ == "__main__":
             start processing all images in the specified folder
             """
             for image in get_files_from_directory(image_path):
+                conv = get_cnn_instance(image_path + "/" + image, False)
                 print("Processing image:", image)
-                polled_map = process(image_path + "/" + image, kernel_set, False)
+                polled_map = process(shape_index, conv, False)
                 for key in polled_map:
                     for row in polled_map[key]:
                         # convert from numpy array to list

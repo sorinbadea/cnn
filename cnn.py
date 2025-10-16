@@ -4,7 +4,7 @@ from tensorflow.keras.layers import MaxPooling2D
 
 class ConvolutionNN:
     def __init__(self, image_path, verbose=False):
-        self._image = Image.open(image_path)
+        self._image_path = image_path
         self._verbose = verbose
 
     def kernel_load(self, array):
@@ -15,23 +15,34 @@ class ConvolutionNN:
         self._kernel = np.array(array)
         self._kernel_rows, self._kernel_cols = self._kernel.shape
 
-    def image_resize(self, width=24):
+    def pre_processing(self, width = 48):
         """
-        resize input image to required width
-        @param width: width to resize
+        resize image, convert to gray-scale and invert the gray-scale
+        if the image is too dark, (helps convolution)
+        @param width: image width to resize
         """
+        self._image = Image.open(self._image_path)
         ratio = self._image.width / width
-        self._image.thumbnail((width, int(self._image.height/ratio)), Image.Resampling.LANCZOS)
-
-    def grayscale(self):
-        grayscale = ImageOps.invert(self._image.convert('L'))
-        if self._verbose:
-            self._image.show()
-        self._array = np.array(grayscale)
+        self._image.thumbnail((width, int(self._image.height/ratio)), Image.Resampling.LANCZOS)    
+        """
+        convert to grayscale
+        """
+        image = self._image.convert('L')
+        img_array = np.array(image)
+        # Count pixels that are very dark (e.g., < 50 out of 255)
+        black_pixels = np.sum(img_array < 50)
+        total_pixels = img_array.size
+        """
+        invert the gray scale if too bright
+        """
+        if black_pixels / total_pixels < 0.34:
+            image = ImageOps.invert(image)
+        self._array = np.array(image)
         self._image_rows, self._image_cols = self._array.shape
         if self._verbose:
             print("initial image matrix")
             print("------ height ", self._array.shape[0], " width ", self._array.shape[1])
+            image.show()
             print(self._array)
 
     def run_convolution(self, normalized_array):

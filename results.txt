@@ -1,0 +1,114 @@
+Processing: test_images/car1.jpeg
+Confidence result 0 % for digit '1'
+Confidence result 0 % for digit '2'
+Confidence result 0 % for house
+unknown pattern, confidence result  0 %
+
+Processing: test_images/house.jpeg
+Confidence result 0 % for digit '1'
+Confidence result 0 % for digit '2'
+Confidence result 0 % for house
+unknown pattern, confidence result  0 %
+
+Processing: test_images/house2.jpeg
+Confidence result 0 % for digit '1'
+Confidence result 0 % for digit '2'
+Confidence result 0 % for house
+unknown pattern, confidence result  0 %
+
+Processing: test_images/human1.jpeg
+Confidence result 100 % for digit '1'
+Confidence result 100 % for digit '2'
+Confidence result 57 % for house
+digit '1'  with a confidence of  100 %
+
+Processing: test_images/human2.jpeg
+Confidence result 0 % for digit '1'
+Confidence result 0 % for digit '2'
+Confidence result 0 % for house
+unknown pattern, confidence result  0 %
+
+Processing: test_images/one.jpeg
+Confidence result 100 % for digit '1'
+Confidence result 43 % for digit '2'
+Confidence result 57 % for house
+digit '1'  with a confidence of  100 %
+
+Processing: test_images/one2.jpeg
+Confidence result 100 % for digit '1'
+Confidence result 71 % for digit '2'
+Confidence result 43 % for house
+digit '1'  with a confidence of  100 %
+
+Processing: test_images/one3.jpeg
+Confidence result 100 % for digit '1'
+Confidence result 71 % for digit '2'
+Confidence result 57 % for house
+digit '1'  with a confidence of  100 %
+
+Processing: test_images/one4.png
+Confidence result 67 % for digit '1'
+Confidence result 43 % for digit '2'
+Confidence result 57 % for house
+digit '1'  with a confidence of  67 %
+
+Processing: test_images/one5.jpeg
+Confidence result 83 % for digit '1'
+Confidence result 86 % for digit '2'
+Confidence result 86 % for house
+digit '2'  with a confidence of  86 %
+
+Processing: test_images/one6.png
+Confidence result 50 % for digit '1'
+Confidence result 43 % for digit '2'
+Confidence result 57 % for house
+unknown pattern, confidence result  57 %
+
+Processing: test_images/one7.jpeg
+Confidence result 100 % for digit '1'
+Confidence result 86 % for digit '2'
+Confidence result 57 % for house
+digit '1'  with a confidence of  100 %
+
+Processing: test_images/ship.jpeg
+Confidence result 0 % for digit '1'
+Confidence result 0 % for digit '2'
+Confidence result 0 % for house
+unknown pattern, confidence result  0 %
+
+Processing: test_images/two_1.jpeg
+Confidence result 83 % for digit '1'
+Confidence result 86 % for digit '2'
+Confidence result 57 % for house
+digit '2'  with a confidence of  86 %
+
+Processing: test_images/two_2.jpeg
+Confidence result 100 % for digit '1'
+Confidence result 100 % for digit '2'
+Confidence result 86 % for house
+digit '1'  with a confidence of  100 %
+
+Processing: test_images/two_4.jpeg
+Confidence result 83 % for digit '1'
+Confidence result 100 % for digit '2'
+Confidence result 71 % for house
+digit '2'  with a confidence of  100 %
+
+Processing: test_images/two_5.jpeg
+Confidence result 83 % for digit '1'
+Confidence result 100 % for digit '2'
+Confidence result 71 % for house
+digit '2'  with a confidence of  100 %
+
+Processing: test_images/two_6.png
+Confidence result 67 % for digit '1'
+Confidence result 100 % for digit '2'
+Confidence result 57 % for house
+digit '2'  with a confidence of  100 %
+
+Processing: test_images/two3.png
+Confidence result 83 % for digit '1'
+Confidence result 86 % for digit '2'
+Confidence result 57 % for house
+digit '2'  with a confidence of  86 %
+

@@ -16,7 +16,7 @@ def is_match_distance(new_values, trained_values):
     distance = euclidean_distance(new_values, trained_values)
     # try to evaluate an appropiate threshold
     nv_average = np.sum(np.array(new_values))/len(new_values)
-    threshold = nv_average * 0.1
+    threshold = nv_average * 0.05
     return distance < threshold, distance
 
 def iterate_in_samples(trained_filter, input_pooled):
@@ -30,24 +30,30 @@ def iterate_in_samples(trained_filter, input_pooled):
 def evaluate_filter(trained_filter, input_pooled, verbose=False):
     """
     Evaluates a single pooled filter result against trained 
-    patterns using euclidean distance;
+    patterns using euclidean distance; returns a triple of
+    matches, not matches and euclidian distance
     @param trained_filter: list of trained samples for a kernel
     @param input_pooled: new input samples to evaluate
     """
     matches = 0
     not_matches = 0
+    min_distance = 255.0
     for pool_row, train_row in iterate_in_samples(trained_filter, input_pooled):
         match, distance = is_match_distance(pool_row, train_row)
         if match:
             matches += 1
         else:
             not_matches += 1
-    return matches, not_matches
+        # evaluate the minial distance for this kernel
+        if min_distance > round(distance.item(), 2):
+            min_distance = round(distance.item(), 2)
+    return matches, not_matches, min_distance
 
-def evaluate(pooled_maps, verbose=False):
+def evaluate(pooled_maps, shape_index, verbose=False):
     """
     Returns a map with the result of evaluation for each kernel;
-    @param pooled_maps: map of kernel shapes to pooled outputs@
+    @param pooled_maps: map of kernel shapes to pooled outputs
+    @param shape_index: shape index
     """
     result = {}
     db = DataBaseInterface('localhost','myapp','postgres','password',5432)
@@ -58,9 +64,14 @@ def evaluate(pooled_maps, verbose=False):
             return None
         else:
             result[key] = evaluate_filter(trained_filter, pooled_maps[key], verbose)
+    if verbose:
+        print("analyse result for shape ", shape_index + 1)
+        print(result)
     db.database_disconnect()
     matches = [ result[key][0] for key in result ]
+    min_distances = [ result[key][2] for key in result ]
     total_matches = sum(1 for m in matches if m > 0)
+    ### print("minmal distances ",min_distances, " total ", sum(min_distances))
     return total_matches/len(result)
 
 if __name__ == "__main__":
