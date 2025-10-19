@@ -6,8 +6,7 @@ import filters
 import database as data
 import analyzer as ana
 
-REDUCED_WIDTH = 128
-
+REDUCED_WIDTH = 48
 def usage():
     print("Usage python main.py -f [image file], debug image processing steps")
     print("      python main.py -d [folder_with images] [element to train] train the model")
@@ -39,47 +38,53 @@ def get_shape_name():
     print(f"Error: element to train '{element_to_match}' not found")
     usage()
 
-def get_cnn_instance(image_path, verbosity):
-    try:
-        conv = cnn.ConvolutionNN(image_path, verbosity)
-        conv.pre_processing(REDUCED_WIDTH)
-        return conv
-    except FileNotFoundError:
-        print(f"Error: File '{image_path}' not found")
-        # Handle the error (set default, raise custom exception, etc.)
-    except Image.UnidentifiedImageError:
-        print(f"Error: '{image_path}' is not a valid image file")
-    except PermissionError:
-        print(f"Error: Permission denied accessing '{image_path}'")
-    except Exception as e:
-        print(f"Unexpected exception: {e}")
-    print("processing image stopped")
-    return None
+class ImageProcessor:
+    def __init__(self, image_path, width, verbose=False):
+        self._image_path = image_path
+        self._verbose = verbose
+        self._reduce_width = width
 
-def process(shape_index, conv, verbosity):
-    """
-    Process the image loaded from image_path;
-    returns a map of pooled outputs for each kernel shape
-    @param image_path : image location
-    @kernel_set: kernel or filter to apply
-    @param verbosity: enable verbosity
-    """
-    try:
-        pooled_maps = {}
-        kernel_hash = filters.shapes[shape_index]['filters']
-        for key, i in zip (kernel_hash, range(len(kernel_hash))):
-            conv.kernel_load(kernel_hash[key])
-            # run the convolution algorithm per kernel
-            pooled = conv.process(filters.shapes[shape_index]['pool_size'],
-                                filters.shapes[shape_index]['stride'])
-            if verbosity:
-                print("pooled for kernel:", i+1)
-                print(pooled)
-            pooled_maps[key] = pooled
-        return pooled_maps
-    except Exception as e:
-        print(f"Unexpected exception: {e}")
+    def pre_processing(self):
+        try:
+            self._engine = cnn.ConvolutionNN(self._image_path, self._verbose)
+            self._engine.pre_processing(REDUCED_WIDTH)
+            return self._engine
+        except FileNotFoundError:
+            print(f"Error: File '{image_path}' not found")
+            # Handle the error (set default, raise custom exception, etc.)
+        except Image.UnidentifiedImageError:
+            print(f"Error: '{image_path}' is not a valid image file")
+        except PermissionError:
+            print(f"Error: Permission denied accessing '{image_path}'")
+        except Exception as e:
+            print(f"Unexpected exception: {e}")
+        print("processing image stopped")
         return None
+
+    def process(self, shape_index):
+        """
+        Process the image loaded from image_path;
+        returns a map of pooled outputs for each kernel shape
+        @param image_path : image location
+        @kernel_set: kernel or filter to apply
+        @param verbosity: enable verbosity
+        """
+        try:
+            pooled_maps = {}
+            kernel_hash = filters.shapes[shape_index]['filters']
+            for key, i in zip (kernel_hash, range(len(kernel_hash))):
+                self._engine.kernel_load(kernel_hash[key])
+                # run the convolution algorithm per kernel
+                pooled = self._engine.process(filters.shapes[shape_index]['pool_size'],
+                                    filters.shapes[shape_index]['stride'])
+                if self._verbose:
+                    print("pooled for kernel:", i+1)
+                    print(pooled)
+                pooled_maps[key] = pooled
+            return pooled_maps
+        except Exception as e:
+            print(f"Unexpected exception: {e}")
+            return None
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
@@ -88,10 +93,12 @@ if __name__ == "__main__":
             single image processing mode
             """
             image_path = sys.argv[2]
-            conv = get_cnn_instance(image_path, True)
+            img_processor = ImageProcessor(image_path, REDUCED_WIDTH, True)
+            if img_processor.pre_processing() == None:
+                sys.exit(1)
             for shape_index in range(len(filters.shapes)):
                 print("shape index ", shape_index + 1)
-                pooled_map = process(shape_index, conv, True)
+                pooled_map = img_processor.process(shape_index)
                 # display results
                 for key in pooled_map:
                    print("Pooled output for kernel:", key)
@@ -103,9 +110,11 @@ if __name__ == "__main__":
             image_path = sys.argv[2]
             # hash of known patter; (digit1, house) and nb of matches/total kernels
             match_ratio = {}
-            conv = get_cnn_instance(image_path, False)
+            img_processor = ImageProcessor(image_path, REDUCED_WIDTH, False)
+            if img_processor.pre_processing() == None:
+                sys.exit(1)
             for shape_index in range(len(filters.shapes)):
-                pooled_map = process(shape_index, conv, False)
+                pooled_map = img_processor.process(shape_index)
                 """
                 call the analyzer module
                 """
@@ -136,9 +145,11 @@ if __name__ == "__main__":
             start processing all images in the specified folder
             """
             for image in get_files_from_directory(image_path):
-                conv = get_cnn_instance(image_path + "/" + image, False)
+                img_processor = ImageProcessor(image_path + "/" + image, REDUCED_WIDTH, False)
+                if img_processor.pre_processing() == None:
+                    sys.exit(1)
                 print("Processing image:", image)
-                polled_map = process(shape_index, conv, False)
+                polled_map = img_processor.process(shape_index)
                 for key in polled_map:
                     for row in polled_map[key]:
                         # convert from numpy array to list

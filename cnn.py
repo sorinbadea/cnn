@@ -29,13 +29,13 @@ class ConvolutionNN:
         """
         image = self._image.convert('L')
         img_array = np.array(image)
-        # Count pixels that are very dark (e.g., < 50 out of 255)
-        black_pixels = np.sum(img_array < 50)
+        # Count pixels that are very dark (e.g., < 70 out of 255)
+        black_pixels = np.sum(img_array < 70)
         total_pixels = img_array.size
         """
         invert the gray scale if too bright
         """
-        if black_pixels / total_pixels < 0.34:
+        if black_pixels / total_pixels < 0.4:
             image = ImageOps.invert(image)
         self._array = np.array(image)
         self._image_rows, self._image_cols = self._array.shape

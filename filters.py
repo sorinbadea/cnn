@@ -145,6 +145,6 @@ kernels_house = {
     }
 }
 
-shapes = [ kernels_digit_one, kernels_digit_two, kernels_house ]
+shapes = [ kernels_digit_one, kernels_digit_two ] #, kernels_house ]
 
  

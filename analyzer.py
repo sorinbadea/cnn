@@ -16,7 +16,7 @@ def is_match_distance(new_values, trained_values):
     distance = euclidean_distance(new_values, trained_values)
     # try to evaluate an appropiate threshold
     nv_average = np.sum(np.array(new_values))/len(new_values)
-    threshold = nv_average * 0.05
+    threshold = nv_average * 0.14
     return distance < threshold, distance
 
 def iterate_in_samples(trained_filter, input_pooled):
