@@ -1,9 +1,9 @@
-This is simple pattern recognition application
+This is simple pattern recognition application written in python.
 
-It uses Convolution followed by max pooling to figure possible match with known patterns.
-The result is evaluate using the euclidian distance;
+It uses Convolution followed by max pooling and compare the results with similar data
+from the postgresal databse. It uses euclidian distance to evaluate the possible resemblance.
 
-For training a Postgres SQL database is nedeeed; a Dockerfile is provided in pg-sql-docker 
-directory, one_images/ two_images/ and houses/ contains assoxiated images used for training;
+For training a Postgres SQL database is nedeeed, a Dockerfile is provided in pg-sql-docker 
+directory, one_images/ two_images/ and houses/ contains associated images used for training.
 
-It is highly recommended to set-up a python virtual environment, I uses tensorflow, PIL qnd numpy
+It is highly recommended to set-up a python virtual environment, tensorflow, PIL qnd numpy are used for implementation.
