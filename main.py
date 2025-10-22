@@ -86,6 +86,31 @@ class ImageProcessor:
             print(f"Unexpected exception: {e}")
             return None
 
+def verdict(cosine_result, eucl_result):
+    """
+    issue the final verdict
+    for euclidian distance, get the maximum match from all tried filters
+    for cosine similarity get the shape with the maximum similarities
+    @param cosine_result - name of the shape with the best cosine similarity
+    @param eucl_result; hash of euclidian matches/shape
+    """
+    cosine_match = max(cosine_result, key=cosine_result.get)
+    eucl_dist_match = max(eucl_result, key=eucl_result.get)
+    eucl_percent = round(eucl_result[eucl_dist_match] * 100)
+
+    if eucl_percent > 66 and cosine_match == eucl_dist_match:
+        # ideal case, both evaluation methods matches
+        print(cosine_match, " with euclidian distance confidence of", eucl_percent, "% and cosine confidence")
+    elif eucl_percent > 80 and cosine_match != eucl_dist_match:
+         # higher euclidian match but not matching the cosine, take eculidian
+         print(eucl_dist_match, " with euclidian distance confidence of", eucl_percent, "% and cosine confidence")
+    elif eucl_percent > 32 and eucl_percent < 67 and cosine_match == eucl_dist_match:
+        # low euclidian confidence, take cosine
+        print(eucl_dist_match, " with euclidian distance confidence of", eucl_percent, "% and cosine confidence")
+    else:
+        # unknown pattern
+        print("unknow patern, low euclidian confidence", eucl_percent, "% cosine confidence ", cosine_match)
+
 if __name__ == "__main__":
     if len(sys.argv) > 2:
         if sys.argv[1] == "-f":
@@ -109,7 +134,8 @@ if __name__ == "__main__":
         elif sys.argv[1] == "-a":
             image_path = sys.argv[2]
             # hash of known patter; (digit1, house) and nb of matches/total kernels
-            match_ratio = {}
+            eucl_result = {}
+            cosine_result = {}
             img_processor = ImageProcessor(image_path, REDUCED_WIDTH, False)
             if img_processor.pre_processing() == None:
                 sys.exit(1)
@@ -118,18 +144,13 @@ if __name__ == "__main__":
                 """
                 call the analyzer module
                 """
-                result = ana.evaluate(pooled_map, shape_index, False)
-                match_ratio[filters.shapes[shape_index]['name']] = result
-                print(f"Confidence result {round(result * 100)} % for {filters.shapes[shape_index]['name']}")
-            """
-            get the maximum match from all tried filters
-            """
-            match_max = max(match_ratio, key=match_ratio.get)
-            if round(match_ratio[match_max] * 100) < 67:
-                print("unknown pattern, confidence result ", round(match_ratio[match_max] * 100), "%")
-            else:
-                print(match_max, " with a confidence of ", round(match_ratio[match_max] * 100), "%")
-            
+                euclidian_result, similarity = ana.evaluate(pooled_map, shape_index, False)
+                eucl_result[filters.shapes[shape_index]['name']] = euclidian_result
+                cosine_result[filters.shapes[shape_index]['name']] = similarity
+                print(f"Confidence result {round(euclidian_result * 100)} % for {filters.shapes[shape_index]['name']}")
+            # issue final verdict
+            verdict(cosine_result, eucl_result)
+
         elif sys.argv[1] == "-d":
             image_path = sys.argv[2]
             """

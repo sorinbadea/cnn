@@ -29,7 +29,7 @@ class ConvolutionNN:
         """
         image = self._image.convert('L')
         img_array = np.array(image)
-        # Count pixels that are very dark (e.g., < 70 out of 255)
+        # Count pixels that are dark (e.g., < 70 out of 255)
         black_pixels = np.sum(img_array < 70)
         total_pixels = img_array.size
         """

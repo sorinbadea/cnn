@@ -7,3 +7,9 @@ For training a Postgres SQL database is nedeeed, a Dockerfile is provided in pg-
 directory, one_images/ two_images/ and houses/ contains associated images used for training.
 
 It is highly recommended to set-up a python virtual environment, tensorflow, PIL qnd numpy are used for implementation.
+
+Links:
+
+https://www.tigerdata.com/learn/implementing-cosine-similarity-in-python
+
+https://medium.com/@joshuaanang783/what-makes-cnns-so-special-exploring-the-true-nature-of-images-and-how-they-work-with-cnns-36adc103c4be
