@@ -98,18 +98,27 @@ def verdict(cosine_result, eucl_result):
     eucl_dist_match = max(eucl_result, key=eucl_result.get)
     eucl_percent = round(eucl_result[eucl_dist_match] * 100)
 
+    # TODO
+    # check euclidian percentage and consider cosine if euclidian is > 66
+    #
     if eucl_percent > 66 and cosine_match == eucl_dist_match:
         # ideal case, both evaluation methods matches
-        print(cosine_match, " with euclidian distance confidence of", eucl_percent, "% and cosine confidence")
+        print(cosine_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
     elif eucl_percent > 80 and cosine_match != eucl_dist_match:
-         # higher euclidian match but not matching the cosine, take eculidian
-         print(eucl_dist_match, " with euclidian distance confidence of", eucl_percent, "% and cosine confidence")
-    elif eucl_percent > 32 and eucl_percent < 67 and cosine_match == eucl_dist_match:
+        # evaluate other shape confidence
+        for key in eucl_result:
+            if cosine_match == key and (eucl_result[key]*100) >= 50:
+                 #consider cosine match if euclidian is still important
+                 print(cosine_match, " with euclidian distance confidence of", eucl_result[key], "% and cosine evaluation", cosine_match)
+                 return
+        # higher euclidian match but not matching the cosine, take eculidian
+        print(eucl_dist_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
+    elif eucl_percent > 33 and eucl_percent < 67 and cosine_match == eucl_dist_match:
         # low euclidian confidence, take cosine
-        print(eucl_dist_match, " with euclidian distance confidence of", eucl_percent, "% and cosine confidence")
+        print(eucl_dist_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
     else:
         # unknown pattern
-        print("unknow patern, low euclidian confidence", eucl_percent, "% cosine confidence ", cosine_match)
+        print("unknow patern, low euclidian confidence", eucl_percent, "% cosine evaluation", cosine_match)
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:

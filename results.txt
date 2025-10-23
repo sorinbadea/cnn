@@ -1,95 +1,114 @@
 Processing: test_images/car1.jpeg
 Confidence result 0 % for digit '1'
 Confidence result 17 % for digit '2'
-unknow patern, low euclidian confidence 17 % cosine confidence  digit '2'
+unknow patern, low euclidian confidence 17 % cosine evaluation digit '2'
+Passed
 
 Processing: test_images/house.jpeg
-Confidence result 0 % for digit '1'
+Confidence result 17 % for digit '1'
 Confidence result 33 % for digit '2'
-digit '2'  with euclidian distance confidence of 33 % and cosine confidence
+unknow patern, low euclidian confidence 33 % cosine evaluation digit '2'
+Passed
 
 Processing: test_images/house2.jpeg
 Confidence result 0 % for digit '1'
 Confidence result 0 % for digit '2'
-unknow patern, low euclidian confidence 0 % cosine confidence  digit '2'
+unknow patern, low euclidian confidence 0 % cosine evaluation digit '2'
+Passed
 
 Processing: test_images/human1.jpeg
 Confidence result 0 % for digit '1'
-Confidence result 33 % for digit '2'
-digit '2'  with euclidian distance confidence of 33 % and cosine confidence
+Confidence result 17 % for digit '2'
+unknow patern, low euclidian confidence 17 % cosine evaluation digit '2'
+Passed
 
 Processing: test_images/human2.jpeg
 Confidence result 0 % for digit '1'
 Confidence result 0 % for digit '2'
-unknow patern, low euclidian confidence 0 % cosine confidence  digit '1'
+unknow patern, low euclidian confidence 0 % cosine evaluation digit '2'
+Passed
 
 Processing: test_images/one.jpeg
 Confidence result 100 % for digit '1'
-Confidence result 0 % for digit '2'
-digit '1'  with euclidian distance confidence of 100 % and cosine confidence
+Confidence result 17 % for digit '2'
+digit '1'  with euclidian distance confidence of 100 % and cosine evaluation digit '1'
+Passed
 
 Processing: test_images/one2.jpeg
 Confidence result 100 % for digit '1'
 Confidence result 0 % for digit '2'
-digit '1'  with euclidian distance confidence of 100 % and cosine confidence
+digit '1'  with euclidian distance confidence of 100 % and cosine evaluation digit '1'
+Passed
 
 Processing: test_images/one3.jpeg
 Confidence result 0 % for digit '1'
 Confidence result 0 % for digit '2'
-unknow patern, low euclidian confidence 0 % cosine confidence  digit '1'
+unknow patern, low euclidian confidence 0 % cosine evaluation digit '1'
+Failed
 
 Processing: test_images/one4.png
-Confidence result 67 % for digit '1'
+Confidence result 50 % for digit '1'
 Confidence result 83 % for digit '2'
-digit '2'  with euclidian distance confidence of 83 % and cosine confidence
+digit '1'  with euclidian distance confidence of 0.5 % and cosine evaluation digit '1'
+Passed
 
 Processing: test_images/one5.jpeg
 Confidence result 0 % for digit '1'
 Confidence result 0 % for digit '2'
-unknow patern, low euclidian confidence 0 % cosine confidence  digit '1'
+unknow patern, low euclidian confidence 0 % cosine evaluation digit '1'
+Failed
 
 Processing: test_images/one6.png
 Confidence result 0 % for digit '1'
 Confidence result 0 % for digit '2'
-unknow patern, low euclidian confidence 0 % cosine confidence  digit '2'
+unknow patern, low euclidian confidence 0 % cosine evaluation digit '2'
+Failed
 
 Processing: test_images/one7.jpeg
 Confidence result 100 % for digit '1'
 Confidence result 0 % for digit '2'
-digit '1'  with euclidian distance confidence of 100 % and cosine confidence
+digit '1'  with euclidian distance confidence of 100 % and cosine evaluation digit '1'
+Passed
 
 Processing: test_images/ship.jpeg
 Confidence result 0 % for digit '1'
 Confidence result 0 % for digit '2'
-unknow patern, low euclidian confidence 0 % cosine confidence  digit '2'
+unknow patern, low euclidian confidence 0 % cosine evaluation digit '2'
+Passed
 
 Processing: test_images/two_1.jpeg
 Confidence result 0 % for digit '1'
 Confidence result 0 % for digit '2'
-unknow patern, low euclidian confidence 0 % cosine confidence  digit '2'
+unknow patern, low euclidian confidence 0 % cosine evaluation digit '2'
+Failed
 
 Processing: test_images/two_2.jpeg
 Confidence result 100 % for digit '1'
-Confidence result 100 % for digit '2'
-digit '1'  with euclidian distance confidence of 100 % and cosine confidence
+Confidence result 83 % for digit '2'
+digit '1'  with euclidian distance confidence of 100 % and cosine evaluation digit '1'
+Passed
 
 Processing: test_images/two_4.jpeg
-Confidence result 33 % for digit '1'
-Confidence result 100 % for digit '2'
-digit '2'  with euclidian distance confidence of 100 % and cosine confidence
+Confidence result 50 % for digit '1'
+Confidence result 67 % for digit '2'
+digit '2'  with euclidian distance confidence of 67 % and cosine evaluation digit '2'
+Passed
 
 Processing: test_images/two_5.jpeg
 Confidence result 17 % for digit '1'
-Confidence result 17 % for digit '2'
-unknow patern, low euclidian confidence 17 % cosine confidence  digit '1'
+Confidence result 0 % for digit '2'
+unknow patern, low euclidian confidence 17 % cosine evaluation digit '2'
+Failed
 
 Processing: test_images/two_6.png
 Confidence result 0 % for digit '1'
 Confidence result 100 % for digit '2'
-digit '2'  with euclidian distance confidence of 100 % and cosine confidence
+digit '2'  with euclidian distance confidence of 100 % and cosine evaluation digit '2'
+Passed
 
 Processing: test_images/two3.png
 Confidence result 0 % for digit '1'
 Confidence result 50 % for digit '2'
-digit '2'  with euclidian distance confidence of 50 % and cosine confidence
+digit '2'  with euclidian distance confidence of 50 % and cosine evaluation digit '2'
+Passed
 

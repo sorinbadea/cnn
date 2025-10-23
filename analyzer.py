@@ -5,54 +5,62 @@ import math
 
 """
 Module to evaluate pooled outputs against trained patterns
+implements cosine evaluation and euclidian distance evaliation
 """
 
 """
 using cosine
 """
 
-def inner_prod(X, Y):
-   sum_prod = 0
-   for x_i, y_i in zip(X, Y):
-        sum_prod += x_i * y_i
-   return sum_prod
+def cosine_similarity(trained_data, new_data):
+    """
+    evaluare cosine similarity new data vs traoined data
+    @param: trained data; data already processed
+    @param new_data : new data obtained via convolution
+    """
+    # helpers
+    def inner_prod(X, Y):
+        sum_prod = 0
+        for x_i, y_i in zip(X, Y):
+            sum_prod += x_i * y_i
+        return sum_prod
 
-def magnitude(X):
-   sum_squares = 0
-   for x_i in X:
-       sum_squares += x_i ** 2
-   return math.sqrt(sum_squares)
+    def magnitude(X):
+        sum_squares = 0
+        for x_i in X:
+            sum_squares += x_i ** 2
+        return math.sqrt(sum_squares)
 
-def cosine_similarity(X, Y):
-    mag_X = magnitude(X)
-    mag_Y = magnitude(Y)
+    mag_X = magnitude(new_data)
+    mag_Y = magnitude(trained_data)
     # Check if either magnitude is zero or very close to zero
     if mag_X == 0 or mag_Y == 0:
         return 0.0
-    return inner_prod(X, Y) / (mag_X * mag_Y)
+    return inner_prod(new_data, trained_data) / (mag_X * mag_Y)
 
-def get_similarity(pooled_data, trained_data):
+def get_similarity(trained_data, new_data):
+    """
+    returns the max similarity for the given input and trained data
+    @param new_data : new data obtained via convolution
+    @param: trained data; data already processed
+    """
     results = []
-    for Y_i in trained_data:
-        similarity = cosine_similarity(pooled_data, Y_i)
-        results.append((Y_i, similarity))
+    for trained_row in trained_data:
+        similarity = cosine_similarity(trained_row, new_data)
+        results.append((trained_row, similarity))
     # Sort by similarity in descending order
     results.sort(key=lambda x: x[1], reverse=True)
     # results [1] is highest similarity among the whole set
     return results[1]
 
-def evaluate_cosine(trained_data, pooled_data):
+def evaluate_cosine(trained_data, new_data, verbose=False):
     results = []
-    t_data = []
-    p_data = pooled_data.tolist()
-    ### debug
-    ### print("pooled_data=", p_data)
-    for t_row in list(trained_data):
-        t_data.append(t_row[0])
-    ### debug
-    ### print("trained_data")
-    for pool_row in p_data:
-        results.append(get_similarity(pool_row, t_data))
+    t_data = [ t_row[0] for t_row in list(trained_data) ]
+    if verbose:
+        print("pooled_data=", new_data.tolist())
+        print("trained_data=", t_data)
+    for pool_row in new_data.tolist():
+        results.append(get_similarity(t_data, pool_row))
     return results
 
 def display_cosine_result(output):
@@ -67,7 +75,6 @@ def display_cosine_result(output):
         for c in output[key]:
             similarity.append(c[1])
         print("max similarity =", max(similarity))
-
 
 """
 using euclidean distance
@@ -93,9 +100,9 @@ def iterate_in_samples(trained_filter, input_pooled):
         for train_row in trained_filter:
             yield pool_row, train_row
 
-def evaluate_filter(trained_filter, input_pooled, verbose=False):
+def evaluate_euclidian(trained_filter, input_pooled):
     """
-    Evaluates a single pooled filter result against trained 
+    Evaluates a single pooled filter result against trained
     patterns using euclidean distance; returns a triple of
     matches, not matches and euclidian distance
     @param trained_filter: list of trained samples for a kernel
@@ -130,7 +137,7 @@ def evaluate(pooled_maps, shape_index, verbose=False):
             print(f"❌ Error fetching data for filter '{key}'")
             return None
         else:
-            euclidian_result[key] = evaluate_filter(trained_filter, pooled_maps[key], verbose)
+            euclidian_result[key] = evaluate_euclidian(trained_filter, pooled_maps[key])
             cosine_result[key] = evaluate_cosine(trained_filter, pooled_maps[key])
     if verbose:
         print("analyse result for shape ", shape_index + 1)
@@ -138,8 +145,7 @@ def evaluate(pooled_maps, shape_index, verbose=False):
         display_cosine_result(cosine_result)
     db.database_disconnect()
     ## evaluate the euclidian results
-    matches = [ euclidian_result[key][0] for key in euclidian_result ]
-    total_matches = sum(1 for m in matches if m > 0)
+    total_matches = sum(1 for m in [ euclidian_result[key][0] for key in euclidian_result ] if m > 0)
     ## evaluate the cosine results
     ### display_cosine_result(cosine_result)
     kernel_similarity  = 0
@@ -150,19 +156,15 @@ def evaluate(pooled_maps, shape_index, verbose=False):
         kernel_similarity += max(similarity)
     if verbose:
         print("sum of kernel similarities", kernel_similarity)
-    ### euclidian distance
-    ### min_distances = [ result[key][2] for key in result ]
-    ### print("minmal distances ",min_distances, " total ", sum(min_distances))
     return total_matches/len(euclidian_result), kernel_similarity
 
 if __name__ == "__main__":
-    # the more in randow changes comparing the trained data, the more
-    # low confidence, even if the values are 10x higher than trained data
-    # if the follow the trend of tarined data is OK
+    # the more random changes comparing the trained data, the more
+    # low confidence, even if the values are 10x higher than trained data,
+    # if follows the trend of trained data, than is OK
     trained_pool = [[10, 11, 12, 13], [11, 12, 13, 13], [11.5, 12, 13, 12.5]]
     new_pool = [[1, 12, 3, 3] , [11, 12, 13, 13], [15, 36, 9, 10], [111, 122, 130, 130 ]]
     result = evaluate_cosine(new_pool, trained_pool, "test")
     for i in result:
         #print(i[0])
         print(i[1])
-        
