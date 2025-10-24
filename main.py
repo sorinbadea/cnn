@@ -31,10 +31,9 @@ def get_shape_name():
     if len(sys.argv) < 4:
         usage()
     element_to_match = sys.argv[3]
-    for shape_index in range(len(filters.shapes)):
-        if filters.shapes[shape_index]['name'] == element_to_match:
-            print(f"Training mode for element '{element_to_match}'")
-            return shape_index
+    for i, shape in enumerate(filters.shapes):
+        if shape['name'] == element_to_match:
+            return i
     print(f"Error: element to train '{element_to_match}' not found")
     usage()
 
@@ -50,41 +49,31 @@ class ImageProcessor:
             self._engine.pre_processing(REDUCED_WIDTH)
             return self._engine
         except FileNotFoundError:
-            print(f"Error: File '{image_path}' not found")
+            print(f"Error: File '{self._image_path}' not found")
             # Handle the error (set default, raise custom exception, etc.)
         except Image.UnidentifiedImageError:
-            print(f"Error: '{image_path}' is not a valid image file")
+            print(f"Error: '{self._image_path}' is not a valid image file")
         except PermissionError:
-            print(f"Error: Permission denied accessing '{image_path}'")
+            print(f"Error: Permission denied accessing '{self._image_path}'")
         except Exception as e:
             print(f"Unexpected exception: {e}")
-        print("processing image stopped")
         return None
 
     def process(self, shape_index):
         """
         Process the image loaded from image_path;
         returns a map of pooled outputs for each kernel shape
-        @param image_path : image location
-        @kernel_set: kernel or filter to apply
-        @param verbosity: enable verbosity
+        @param shape_index : shape number from filters.py
         """
-        try:
-            pooled_maps = {}
-            kernel_hash = filters.shapes[shape_index]['filters']
-            for key, i in zip (kernel_hash, range(len(kernel_hash))):
-                self._engine.kernel_load(kernel_hash[key])
-                # run the convolution algorithm per kernel
-                pooled = self._engine.process(filters.shapes[shape_index]['pool_size'],
-                                    filters.shapes[shape_index]['stride'])
-                if self._verbose:
-                    print("pooled for kernel:", i+1)
-                    print(pooled)
-                pooled_maps[key] = pooled
-            return pooled_maps
-        except Exception as e:
-            print(f"Unexpected exception: {e}")
-            return None
+        pooled_maps = {}
+        kernel_hash = filters.shapes[shape_index]['filters']
+        for key in kernel_hash:
+            self._engine.kernel_load(kernel_hash[key])
+            # run the convolution algorithm per kernel
+            pooled = self._engine.process(filters.shapes[shape_index]['pool_size'],
+                                filters.shapes[shape_index]['stride'])
+            pooled_maps[key] = pooled
+        return pooled_maps
 
 def verdict(cosine_result, eucl_result):
     """
@@ -98,9 +87,6 @@ def verdict(cosine_result, eucl_result):
     eucl_dist_match = max(eucl_result, key=eucl_result.get)
     eucl_percent = round(eucl_result[eucl_dist_match] * 100)
 
-    # TODO
-    # check euclidian percentage and consider cosine if euclidian is > 66
-    #
     if eucl_percent > 66 and cosine_match == eucl_dist_match:
         # ideal case, both evaluation methods matches
         print(cosine_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
@@ -142,7 +128,6 @@ if __name__ == "__main__":
 
         elif sys.argv[1] == "-a":
             image_path = sys.argv[2]
-            # hash of known patter; (digit1, house) and nb of matches/total kernels
             eucl_result = {}
             cosine_result = {}
             img_processor = ImageProcessor(image_path, REDUCED_WIDTH, False)
@@ -156,7 +141,7 @@ if __name__ == "__main__":
                 euclidian_result, similarity = ana.evaluate(pooled_map, shape_index, False)
                 eucl_result[filters.shapes[shape_index]['name']] = euclidian_result
                 cosine_result[filters.shapes[shape_index]['name']] = similarity
-                print(f"Confidence result {round(euclidian_result * 100)} % for {filters.shapes[shape_index]['name']}")
+                print(f"Euclidian dist confidence {round(euclidian_result * 100)} % for {filters.shapes[shape_index]['name']}")
             # issue final verdict
             verdict(cosine_result, eucl_result)
 
@@ -177,7 +162,7 @@ if __name__ == "__main__":
             for image in get_files_from_directory(image_path):
                 img_processor = ImageProcessor(image_path + "/" + image, REDUCED_WIDTH, False)
                 if img_processor.pre_processing() == None:
-                    sys.exit(1)
+                    continue
                 print("Processing image:", image)
                 polled_map = img_processor.process(shape_index)
                 for key in polled_map:

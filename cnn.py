@@ -108,6 +108,7 @@ class ConvolutionNN:
             re-apply max pooling
             """
             self._pooled_map = self.max_pooling2d(pool_size, pool_stride)
+            self.print_array("Pooled map", self._pooled_map)
             h_pool, w_pool = self._pooled_map.shape
 
         return self._pooled_map

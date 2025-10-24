@@ -1,11 +1,11 @@
-This is simple pattern recognition application written in python.
+This is simple pattern recognition application written in python, it "knows" to dte ct the digits "1" and "2", digit "3" work in progres..
 
 It applies Convolution filters followed by max pooling and stores the results in a postgres sql database.
 A postgres sql running container is mandatory, for that a Dockerfile is provided in pg-sql-docker.
 
 For evaluation it combines the euclidian distance computation and the cosine prediection.
 
-Overall confidence results 73%
+Overall confidence results for digit "1" and digit "2" recognition is 73%
 
 It is highly recommended to set-up a python virtual environment, tensorflow, psycopg2 and PIL and numpy are used for implementation.
 
