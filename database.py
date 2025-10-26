@@ -57,7 +57,6 @@ class DataBaseInterface():
         try:
             self.database_connect()
             self._cursor.execute("INSERT INTO " + table_name + " (samples) VALUES (%s)", (data,))
-            print(f"Rows affected: { self._cursor.rowcount}")
             print(f"✅ Data inserted into '{table_name}' successfully.")
             self._connection.commit()
             self._cursor.close()

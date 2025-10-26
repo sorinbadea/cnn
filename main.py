@@ -6,7 +6,7 @@ import filters
 import database as data
 import analyzer as ana
 
-REDUCED_WIDTH = 48
+REDUCED_WIDTH = 128
 def usage():
     print("Usage python main.py -f [image file], debug image processing steps")
     print("      python main.py -d [folder_with images] [element to train] train the model")
@@ -70,8 +70,7 @@ class ImageProcessor:
         for key in kernel_hash:
             self._engine.kernel_load(kernel_hash[key])
             # run the convolution algorithm per kernel
-            pooled = self._engine.process(filters.shapes[shape_index]['pool_size'],
-                                filters.shapes[shape_index]['stride'])
+            pooled = self._engine.process(filters.pool_size, filters.stride)
             pooled_maps[key] = pooled
         return pooled_maps
 
@@ -89,19 +88,23 @@ def verdict(cosine_result, eucl_result):
 
     if eucl_percent > 66 and cosine_match == eucl_dist_match:
         # ideal case, both evaluation methods matches
+        # evaluate other shape confidence
         print(cosine_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
-    elif eucl_percent > 80 and cosine_match != eucl_dist_match:
+
+    elif eucl_percent > 70 and cosine_match != eucl_dist_match:
         # evaluate other shape confidence
         for key in eucl_result:
             if cosine_match == key and (eucl_result[key]*100) >= 50:
                  #consider cosine match if euclidian is still important
-                 print(cosine_match, " with euclidian distance confidence of", eucl_result[key], "% and cosine evaluation", cosine_match)
+                 print(cosine_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
                  return
         # higher euclidian match but not matching the cosine, take eculidian
         print(eucl_dist_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
-    elif eucl_percent > 33 and eucl_percent < 67 and cosine_match == eucl_dist_match:
+
+    elif eucl_percent > 30 and eucl_percent < 71 and cosine_match == eucl_dist_match:
         # low euclidian confidence, take cosine
         print(eucl_dist_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
+
     else:
         # unknown pattern
         print("unknow patern, low euclidian confidence", eucl_percent, "% cosine evaluation", cosine_match)

@@ -23,7 +23,7 @@ class ConvolutionNN:
         """
         self._image = Image.open(self._image_path)
         ratio = self._image.width / width
-        self._image.thumbnail((width, int(self._image.height/ratio)), Image.Resampling.LANCZOS)    
+        self._image.thumbnail((width, round(self._image.height/ratio)), Image.Resampling.LANCZOS)
         """
         convert to grayscale
         """
@@ -88,8 +88,8 @@ class ConvolutionNN:
         """
         apply the following on an image:
         normalization, convolution, ReLU, and max_pooling
-        @pool_size: the size, (width and height) of the pooling array
-        @pool_stride: value to shift on the right and down on each step of max pooling
+        param @pool_size: the size, (width and height) of the pooling array
+        param @pool_stride: value to shift on the right and down on each step of max pooling
         """
         self._feature_map = self.convolution2d()
         self.print_array("Feature map", self._feature_map)
