@@ -94,7 +94,7 @@ def verdict(cosine_result, eucl_result):
     elif eucl_percent > 70 and cosine_match != eucl_dist_match:
         # evaluate other shape confidence
         for key in eucl_result:
-            if cosine_match == key and (eucl_result[key]*100) >= 50:
+            if cosine_match == key and (eucl_result[key]*100) >= 40:
                  #consider cosine match if euclidian is still important
                  print(cosine_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
                  return

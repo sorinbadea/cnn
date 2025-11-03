@@ -5,7 +5,7 @@ A postgres sql running container is mandatory, for that a Dockerfile is provided
 
 For evaluation it combines the euclidian distance computation and the cosine prediection.
 
-Overall confidence results for digit "1" and digit "2" recognition is 73%
+Overall confidence results for digit "1", digit "2" and digit "3 recognition is 70%
 
 It is highly recommended to set-up a python virtual environment, tensorflow, psycopg2 and PIL and numpy are used for implementation.
 
