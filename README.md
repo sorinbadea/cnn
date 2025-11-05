@@ -1,13 +1,11 @@
-This is simple pattern recognition application written in python, it "knows" to detect the digits "1" and "2", digit "3" work in progres..
+   This is simple pattern recognition application written in python, it "knows" to detect the digits "1", "2" and digit "3"
 
-It applies Convolution filters followed by max pooling and stores the results in a postgres sql database.
-A postgres sql running container is mandatory, for that a Dockerfile is provided in pg-sql-docker.
+   It applies Convolution filters followed by max pooling and stores the results in a postgres sql database.
+   A postgres sql running container is mandatory, for that a Dockerfile is provided in pg-sql-docker. For evaluation it combines the euclidian distance computation and the cosine prediction
 
-For evaluation it combines the euclidian distance computation and the cosine prediection.
+   Overall confidence results for digit "1", digit "2" and digit "3 recognition is 74%
 
-Overall confidence results for digit "1", digit "2" and digit "3 recognition is 72%
-
-It is highly recommended to set-up a python virtual environment for: tensorflow, psycopg2 and PIL and numpy are used for implementation.
+   It is highly recommended to set-up a python virtual environment for: tensorflow, psycopg2 and PIL and numpy are used for implementation.
 
 Links:
 https://www.tigerdata.com/learn/implementing-cosine-similarity-in-python
