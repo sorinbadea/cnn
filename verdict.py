@@ -10,6 +10,10 @@ def verdict(cosine_result, eucl_result):
     eucl_dist_match = max(eucl_result, key=eucl_result.get)
     eucl_percent = round(eucl_result[eucl_dist_match] * 100)
 
+    min_eucl_confidence  = round((3/7)*100,2)
+    med_eucl_confidence  = round((4/7)*100,2)
+    high_eucl_confidence = round((5/7)*100,2)
+
     if eucl_percent > 66 and cosine_match == eucl_dist_match:
         # ideal case, both evaluation methods matches
         # evaluate other shape confidence
@@ -27,7 +31,15 @@ def verdict(cosine_result, eucl_result):
 
     elif eucl_percent > 30 and eucl_percent < 71 and cosine_match == eucl_dist_match:
         # low euclidian confidence, take cosine
-        print(eucl_dist_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
+        print(cosine_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
+
+    elif eucl_percent > 30 and eucl_percent < 71 and cosine_match != eucl_dist_match:
+        # good euclidian evaluation but not matching cosine
+        for key in eucl_result:
+            if cosine_match == key and (eucl_result[key]*100) >= 50:
+                 #consider cosine match if euclidian is still important
+                 print(cosine_match, " with euclidian distance confidence of", eucl_percent, "% and cosine evaluation", cosine_match)
+                 return
 
     else:
         # unknown pattern

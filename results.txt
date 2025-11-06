@@ -6,31 +6,31 @@ unknow patern, low euclidian confidence 29 % cosine evaluation digit 2
 Passed
 
 Processing: test_images/house.jpeg
-Euclidian dist confidence 71 % for digit 1
+Euclidian dist confidence 86 % for digit 1
 Euclidian dist confidence 71 % for digit 2
 Euclidian dist confidence 57 % for digit 3
-digit 3  with euclidian distance confidence of 71 % and cosine evaluation digit 3
+digit 1  with euclidian distance confidence of 86 % and cosine evaluation digit 1
 Failed
 
 Processing: test_images/house2.jpeg
 Euclidian dist confidence 29 % for digit 1
 Euclidian dist confidence 29 % for digit 2
 Euclidian dist confidence 29 % for digit 3
-unknow patern, low euclidian confidence 29 % cosine evaluation digit 2
+unknow patern, low euclidian confidence 29 % cosine evaluation digit 3
 Passed
 
 Processing: test_images/human1.jpeg
 Euclidian dist confidence 29 % for digit 1
 Euclidian dist confidence 29 % for digit 2
 Euclidian dist confidence 29 % for digit 3
-unknow patern, low euclidian confidence 29 % cosine evaluation digit 3
+unknow patern, low euclidian confidence 29 % cosine evaluation digit 2
 Passed
 
 Processing: test_images/human2.jpeg
-Euclidian dist confidence 29 % for digit 1
-Euclidian dist confidence 86 % for digit 2
-Euclidian dist confidence 86 % for digit 3
-digit 2  with euclidian distance confidence of 86 % and cosine evaluation digit 2
+Euclidian dist confidence 43 % for digit 1
+Euclidian dist confidence 100 % for digit 2
+Euclidian dist confidence 71 % for digit 3
+digit 2  with euclidian distance confidence of 100 % and cosine evaluation digit 2
 Failed
 
 Processing: test_images/one.jpeg
@@ -42,7 +42,7 @@ Passed
 
 Processing: test_images/one2.jpeg
 Euclidian dist confidence 100 % for digit 1
-Euclidian dist confidence 14 % for digit 2
+Euclidian dist confidence 0 % for digit 2
 Euclidian dist confidence 0 % for digit 3
 digit 1  with euclidian distance confidence of 100 % and cosine evaluation digit 1
 Passed
@@ -64,7 +64,7 @@ Passed
 Processing: test_images/one5.png
 Euclidian dist confidence 100 % for digit 1
 Euclidian dist confidence 71 % for digit 2
-Euclidian dist confidence 43 % for digit 3
+Euclidian dist confidence 29 % for digit 3
 digit 1  with euclidian distance confidence of 100 % and cosine evaluation digit 1
 Passed
 
@@ -72,12 +72,12 @@ Processing: test_images/one6.png
 Euclidian dist confidence 29 % for digit 1
 Euclidian dist confidence 57 % for digit 2
 Euclidian dist confidence 29 % for digit 3
-unknow patern, low euclidian confidence 57 % cosine evaluation digit 1
+digit 2  with euclidian distance confidence of 57 % and cosine evaluation digit 2
 Failed
 
 Processing: test_images/one7.jpeg
 Euclidian dist confidence 100 % for digit 1
-Euclidian dist confidence 0 % for digit 2
+Euclidian dist confidence 14 % for digit 2
 Euclidian dist confidence 0 % for digit 3
 digit 1  with euclidian distance confidence of 100 % and cosine evaluation digit 1
 Passed
@@ -91,29 +91,29 @@ Passed
 
 Processing: test_images/three1.png
 Euclidian dist confidence 14 % for digit 1
-Euclidian dist confidence 29 % for digit 2
-Euclidian dist confidence 43 % for digit 3
-digit 3  with euclidian distance confidence of 43 % and cosine evaluation digit 3
+Euclidian dist confidence 57 % for digit 2
+Euclidian dist confidence 57 % for digit 3
+digit 3  with euclidian distance confidence of 57 % and cosine evaluation digit 3
 Passed
 
 Processing: test_images/three2.jpeg
 Euclidian dist confidence 100 % for digit 1
-Euclidian dist confidence 71 % for digit 2
+Euclidian dist confidence 86 % for digit 2
 Euclidian dist confidence 100 % for digit 3
 digit 3  with euclidian distance confidence of 100 % and cosine evaluation digit 3
 Passed
 
 Processing: test_images/three3.png
-Euclidian dist confidence 43 % for digit 1
-Euclidian dist confidence 71 % for digit 2
+Euclidian dist confidence 57 % for digit 1
+Euclidian dist confidence 57 % for digit 2
 Euclidian dist confidence 57 % for digit 3
-digit 3  with euclidian distance confidence of 71 % and cosine evaluation digit 3
+digit 3  with euclidian distance confidence of 57 % and cosine evaluation digit 3
 Passed
 
 Processing: test_images/three4.jpeg
 Euclidian dist confidence 71 % for digit 1
 Euclidian dist confidence 100 % for digit 2
-Euclidian dist confidence 29 % for digit 3
+Euclidian dist confidence 43 % for digit 3
 digit 2  with euclidian distance confidence of 100 % and cosine evaluation digit 2
 Failed
 
@@ -139,16 +139,16 @@ digit 2  with euclidian distance confidence of 100 % and cosine evaluation digit
 Passed
 
 Processing: test_images/two_5.jpeg
-Euclidian dist confidence 43 % for digit 1
+Euclidian dist confidence 57 % for digit 1
 Euclidian dist confidence 100 % for digit 2
-Euclidian dist confidence 29 % for digit 3
-digit 2  with euclidian distance confidence of 100 % and cosine evaluation digit 2
-Passed
+Euclidian dist confidence 57 % for digit 3
+digit 3  with euclidian distance confidence of 100 % and cosine evaluation digit 3
+Failed
 
 Processing: test_images/two_6.png
-Euclidian dist confidence 43 % for digit 1
+Euclidian dist confidence 57 % for digit 1
 Euclidian dist confidence 100 % for digit 2
-Euclidian dist confidence 71 % for digit 3
+Euclidian dist confidence 86 % for digit 3
 digit 2  with euclidian distance confidence of 100 % and cosine evaluation digit 2
 Passed
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import psycopg2
 import sys
-import numpy as np
 import filters
 
 class DataBaseInterface():
