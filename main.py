@@ -1,7 +1,6 @@
 import cnn
 import sys
 import os
-from PIL import Image
 import filters
 import database as data
 import analyzer as ana

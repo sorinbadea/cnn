@@ -142,8 +142,8 @@ Processing: test_images/two_5.jpeg
 Euclidian dist confidence 57 % for digit 1
 Euclidian dist confidence 100 % for digit 2
 Euclidian dist confidence 57 % for digit 3
-digit 3  with euclidian distance confidence of 100 % and cosine evaluation digit 3
-Failed
+digit 2  with euclidian distance confidence of 100 % and cosine evaluation digit 3
+Passed
 
 Processing: test_images/two_6.png
 Euclidian dist confidence 57 % for digit 1

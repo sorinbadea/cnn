@@ -18,7 +18,7 @@ def run_thread(folder, shape):
 if __name__ == "__main__":
     threads = []
     for shapes in filters.shapes:
-        threads.append(threading.Thread(target = run_thread, args=(shapes['path'], shapes['name'],)))
+        threads.append(threading.Thread(target = run_thread, args=("training_images/" + shapes['path'], shapes['name'],)))
     for t in threads:
         t.start()
     for t in threads:
