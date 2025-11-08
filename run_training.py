@@ -8,7 +8,7 @@ def run_thread(folder, shape):
     """
     print("start trainig data for shape", shape)
     process = subprocess.Popen(
-        ["python", "main.py", "-d", folder, shape],
+        ["python", "main.py", "-t", folder, shape],
         stdout=subprocess.PIPE,
         text=True
     )
@@ -27,6 +27,6 @@ if __name__ == "__main__":
     print("training done!")
 
 # run the following in a separate thread
-#python main.py -d training_images/one_images/ "digit 1"
-#python main.py -d training_images:two_images/ "digit 2"
-#python main.py -d training_images/three_images/ "digit 3"
+#python main.py -t training_images/one_images/ "digit 1"
+#python main.py -t training_images:two_images/ "digit 2"
+#python main.py -t training_images/three_images/ "digit 3"
