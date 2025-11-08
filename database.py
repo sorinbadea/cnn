@@ -12,6 +12,7 @@ class DataBaseInterface():
         self._port = port
         self._connection = None
         self._cursor = None
+        self._trained_data = {}
 
     def database_connect(self):
         try:
@@ -39,11 +40,8 @@ class DataBaseInterface():
 
     def get_data(self, table_name):
         try:
-            self.database_connect()
             self._cursor.execute("SELECT samples FROM " + table_name)
             rows = self._cursor.fetchall()
-            self._cursor.close()
-            self._connection.close()
             return rows
         except psycopg2.OperationalError as e:
             print(f"❌ Cannot connect to database: {e}")
@@ -85,6 +83,25 @@ class DataBaseInterface():
             print(f"❌ Unexpected error: {e}")
             return False
         return True
+
+    def load_trained_data(self):
+        """
+        Loads the all trained data from filters.py into memory
+        """
+        self.database_connect()
+        for shape_index in range(len(filters.shapes)):
+            shape = filters.shapes[shape_index]
+            for key in shape['filters']:
+                self._trained_data[key] = self.get_data(key)
+        print("✅ Trained data loaded successfully.")
+        self.database_disconnect()
+
+    def get_trained_data(self, key):
+        """
+        Returns the trained data for a specific kernel key
+        @param key: kernel key
+        """
+        return self._trained_data[key] or None
 
 if __name__ == "__main__":
     db = DataBaseInterface('localhost','myapp','postgres','password',5432)

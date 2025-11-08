@@ -27,6 +27,6 @@ if __name__ == "__main__":
     print("training done!")
 
 # run the following in a separate thread
-#python main.py -d one_images/    "digit 1"
-#python main.py -d two_images/    "digit 2"
-#python main.py -d three_images/  "digit 3"
+#python main.py -d training_images/one_images/ "digit 1"
+#python main.py -d training_images:two_images/ "digit 2"
+#python main.py -d training_images/three_images/ "digit 3"

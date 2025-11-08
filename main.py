@@ -2,15 +2,18 @@ import cnn
 import sys
 import os
 import filters
+from PIL import Image
+from pathlib import Path
 import database as data
 import analyzer as ana
 import verdict as vd
+from database import DataBaseInterface
 
 REDUCED_WIDTH = 128
 def usage():
-    print("Usage python main.py -f [image file], debug image processing steps")
-    print("      python main.py -d [folder_with images] [element to train] train the model")
-    print("      python main.py -a [image file], analyse mode, run all the filters and output a confidence percent")
+    print("Usage python main.py -d [image file], debug image processing steps")
+    print("      python main.py -t [folder with images] [shape to train] train the model")
+    print("      python main.py -a [image file | image_path], analyse mode, run all the filters and output a confidence percent")
     sys.exit(1)
 
 def get_files_from_directory(directory):
@@ -22,19 +25,16 @@ def get_files_from_directory(directory):
     for f in files_only:
         yield f
 
-def get_shape_name():
+def get_shape_index(shape2match):
     """
-    returns the index of the kernel set to use for training
+    returns the index of the shape index be used for training
     based on the element name provided as command line argument
     e.g. "digit '1'"
     """
-    if len(sys.argv) < 4:
-        usage()
-    element_to_match = sys.argv[3]
     for i, shape in enumerate(filters.shapes):
-        if shape['name'] == element_to_match:
+        if shape['name'] == shape2match:
             return i
-    print(f"Error: element to train '{element_to_match}' not found")
+    print(f"Error: element to train '{shape2match}' not found")
     usage()
 
 class ImageProcessor:
@@ -73,10 +73,30 @@ class ImageProcessor:
             pooled = self._engine.process(filters.pool_size, filters.stride)
             pooled_maps[key] = pooled
         return pooled_maps
+    
+def process_and_analyse_image(image_path):
+    """
+    process and analyse a single image
+    @param image_path: path to the image file
+    """
+    img_processor = ImageProcessor(image_path, REDUCED_WIDTH, False)
+    if img_processor.pre_processing() == None:
+        sys.exit(1)
+    for shape_index in range(len(filters.shapes)):
+        pooled_map = img_processor.process(shape_index)
+        """
+        call the analyzer module
+        """
+        euclidian_result, similarity = ana.evaluate(pooled_map, shape_index, db, False)
+        eucl_result[filters.shapes[shape_index]['name']] = euclidian_result
+        cosine_result[filters.shapes[shape_index]['name']] = similarity
+        print(f"Euclidian dist confidence {round(euclidian_result * 100)} % for {filters.shapes[shape_index]['name']}")
+    # issue final verdict
+    vd.verdict(cosine_result, eucl_result)
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
-        if sys.argv[1] == "-f":
+        if sys.argv[1] == "-d":
             """
             single image processing mode
             """
@@ -98,27 +118,29 @@ if __name__ == "__main__":
             image_path = sys.argv[2]
             eucl_result = {}
             cosine_result = {}
-            img_processor = ImageProcessor(image_path, REDUCED_WIDTH, False)
-            if img_processor.pre_processing() == None:
-                sys.exit(1)
-            for shape_index in range(len(filters.shapes)):
-                pooled_map = img_processor.process(shape_index)
-                """
-                call the analyzer module
-                """
-                euclidian_result, similarity = ana.evaluate(pooled_map, shape_index, False)
-                eucl_result[filters.shapes[shape_index]['name']] = euclidian_result
-                cosine_result[filters.shapes[shape_index]['name']] = similarity
-                print(f"Euclidian dist confidence {round(euclidian_result * 100)} % for {filters.shapes[shape_index]['name']}")
-            # issue final verdict
-            vd.verdict(cosine_result, eucl_result)
+            db = DataBaseInterface('localhost','myapp','postgres','password',5432)
+            db.load_trained_data()
+            if Path(image_path).is_file():
+                process_and_analyse_image(image_path)
+            elif Path(image_path).is_dir():
+                for image in get_files_from_directory(image_path):
+                    print("Processing image:", image)
+                    process_and_analyse_image(image_path + "/" + image)
+            else:
+                print(f"Error: '{image_path}' is neither a valid file nor a directory")
+            db.database_disconnect()
 
-        elif sys.argv[1] == "-d":
+        elif sys.argv[1] == "-t":
+            if len(sys.argv) < 4:
+                usage()
             image_path = sys.argv[2]
+            if not Path(image_path).is_dir():
+                print(f"Error: '{image_path}' is not a valid directory")
+                usage()
             """
             training mode, update a table with pooled data for each kernel shape
             """
-            shape_index = get_shape_name()
+            shape_index = get_shape_index(sys.argv[3])
             db = data.DataBaseInterface('localhost','myapp','postgres','password',5432)
             for key in filters.shapes[shape_index]['filters']:
                 if db.create_table(key) is False:

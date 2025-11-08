@@ -1,6 +1,4 @@
 import numpy as np
-import filters
-from database import DataBaseInterface
 import math
 
 """
@@ -113,16 +111,14 @@ def evaluate_euclidian(trained_filter, input_pooled):
     min_distance = 255.0
     for pooled_row, trained_row in iterate_in_samples(trained_filter, input_pooled):
         match, distance = is_match_distance(trained_row, pooled_row)
-        if match:
-            matches += 1
-        else:
-            not_matches += 1
+        matches += int(match)
+        not_matches += int(not match)
         # evaluate the minial distance for this kernel
         if min_distance > round(distance.item(), 2):
             min_distance = round(distance.item(), 2)
     return matches, not_matches, min_distance
 
-def evaluate(pooled_maps, shape_index, verbose=False):
+def evaluate(pooled_maps, shape_index, db, verbose=False):
     """
     Returns a map with the result of evaluation for each kernel;
     @param pooled_maps: map of kernel shapes to pooled outputs
@@ -130,9 +126,8 @@ def evaluate(pooled_maps, shape_index, verbose=False):
     """
     euclidian_result = {}
     cosine_result = {}
-    db = DataBaseInterface('localhost','myapp','postgres','password',5432)
     for key in pooled_maps:
-        trained_filter = db.get_data(key)
+        trained_filter = db.get_trained_data(key)
         if trained_filter is False:
             print(f"❌ Error fetching data for filter '{key}'")
             return None
@@ -143,7 +138,7 @@ def evaluate(pooled_maps, shape_index, verbose=False):
         print("analyse result for shape ", shape_index + 1)
         print(euclidian_result)
         display_cosine_result(cosine_result)
-    db.database_disconnect()
+
     ## evaluate the euclidian results
     total_matches = sum(1 for m in [ euclidian_result[key][0] for key in euclidian_result ] if m > 0)
     ## evaluate the cosine results
