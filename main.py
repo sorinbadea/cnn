@@ -91,9 +91,11 @@ def process_and_analyse_image(image_path, verbose=False):
         eucl_result[filters.shapes[shape_index]['name']] = euclidian_result
         cosine_result[filters.shapes[shape_index]['name']] = similarity
         print(f"Euclidian dist confidence {round(euclidian_result * 100, 2)} % for {filters.shapes[shape_index]['name']}")
-    # issue final verdict
-    vd.verdict(cosine_result, eucl_result)
-    print()
+
+    # issue verdict
+    print(f"Cosine evaluation '{max(cosine_result, key=cosine_result.get)}'")
+    res = vd.verdict(cosine_result, eucl_result)
+    print(f"'{res}' image in file '{image_path}'")
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
@@ -125,8 +127,8 @@ if __name__ == "__main__":
                 process_and_analyse_image(image_path, True)
             elif Path(image_path).is_dir():
                 for image in get_files_from_directory(image_path):
-                    print("Processing image:", image)
                     process_and_analyse_image(image_path + "/" + image, False)
+                    print()
             else:
                 print(f"Error: '{image_path}' is neither a valid file nor a directory")
             db.database_disconnect()
@@ -159,8 +161,9 @@ if __name__ == "__main__":
                 for key in polled_map:
                     for row in polled_map[key]:
                         # convert from numpy array to list
-                        db.insert_data(key, row.tolist())
-            db.database_disconnect()
+                        res = db.insert_data(key, row.tolist())
+                        if res is False:
+                            print(f"❌ Error inserting data into table '{key}'")
         else:
             usage()
     else:

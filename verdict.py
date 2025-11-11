@@ -2,11 +2,6 @@
 verdict module, issue the final verdict based on analyzer results
 """
 
-def get_cosine_for_eucl_result(cosine_result, eucl_result):
-    if eucl_result[cosine_result]:
-        return round(eucl_result[cosine_result]*100, 2)
-    return None
-
 def check_other_shapes(eucl_results, shape_of_100, treshold):
     """
     check if other shapes have euclidian distance over treshold
@@ -18,7 +13,7 @@ def check_other_shapes(eucl_results, shape_of_100, treshold):
         for key in eucl_results:
             if key == shape_of_100:
                 continue
-            if (round(eucl_results[key]*100, 2)) > treshold:
+            if (round(eucl_results[key]*100, 2)) >= treshold:
                 return False
         return True
     return False
@@ -40,33 +35,31 @@ def verdict(cosine_result, eucl_result):
     med_eucl_confidence  = round((4/7)*100, 2) # 57.14 %
     high_eucl_confidence = round((5/7)*100, 2) # 71.42 %
 
+    result = "Unknown pattern"
+
     if check_other_shapes(eucl_result, eucl_dist_match, med_eucl_confidence):
         # only one shape has 100 % euclidian confidence, ignore cosine evaluation
-        print(eucl_dist_match, " with euclidian distance confidence of", max_eucl_percent, "% and cosine evaluation", cosine_match)
+        result = eucl_dist_match
+        #print(eucl_dist_match, " with euclidian distance confidence of", max_eucl_percent, "% and cosine evaluation", cosine_match)
 
     elif max_eucl_percent >= high_eucl_confidence and cosine_match == eucl_dist_match:
         # ideal case, both evaluation methods matches
-        print(cosine_match, " with euclidian distance confidence of", max_eucl_percent, "% and cosine evaluation", cosine_match)
+        result = cosine_match
 
     elif max_eucl_percent >= med_eucl_confidence and cosine_match != eucl_dist_match:
-        # cosine evaluation does not match, check other shapes with cosine match
+        # cosine evaluation does not match, check other shapes vs cosine match
 
         if round(eucl_result[cosine_match]*100, 2) <= min_eucl_confidence:
-            # consider euclidian match if cosine evaluation is not important
-            print(eucl_dist_match, " with euclidian distance confidence of", max_eucl_percent, "% and cosine evaluation", cosine_match)
+            # consider euclidian match if euclidian result for cosine evaluation is not important
+            result = eucl_dist_match
 
         elif round(eucl_result[cosine_match]*100, 2) >= med_eucl_confidence:
             # consider cosine match if euclidian is still important
-            print(cosine_match, " with euclidian distance confidence of", max_eucl_percent, "% and cosine evaluation", cosine_match)
-
-        else:
-            # unknown pattern
-            print("unknow patern, low euclidian confidence", max_eucl_percent, "% cosine evaluation", cosine_match)
+            result = cosine_match
 
     elif max_eucl_percent >= low_eucl_confidence and max_eucl_percent <= high_eucl_confidence and cosine_match == eucl_dist_match:
         # average  euclidian confidence; cosine evaluation matches
-        print(cosine_match, " with euclidian distance confidence of", max_eucl_percent, "% and cosine evaluation", cosine_match)
+        result = cosine_match
 
-    else:
-        # unknown pattern
-        print("unknow patern, low euclidian confidence", max_eucl_percent, "% cosine evaluation", cosine_match)
+    return result
+

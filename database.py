@@ -54,9 +54,9 @@ class DataBaseInterface():
         try:
             self.database_connect()
             self._cursor.execute("INSERT INTO " + table_name + " (samples) VALUES (%s)", (data,))
-            print(f"✅ Data inserted into '{table_name}' successfully.")
+            ## print(f"✅ Data inserted into '{table_name}' successfully.")
             self._connection.commit()
-            self._cursor.close()
+            self.database_disconnect()
         except psycopg2.OperationalError as e:
             print(f"❌ Cannot connect to database: {e}")
             return False
