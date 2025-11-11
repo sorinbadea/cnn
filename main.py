@@ -74,7 +74,7 @@ class ImageProcessor:
             pooled_maps[key] = pooled
         return pooled_maps
     
-def process_and_analyse_image(image_path):
+def process_and_analyse_image(image_path, verbose=False):
     """
     process and analyse a single image
     @param image_path: path to the image file
@@ -87,12 +87,13 @@ def process_and_analyse_image(image_path):
         """
         call the analyzer module
         """
-        euclidian_result, similarity = ana.evaluate(pooled_map, shape_index, db, False)
+        euclidian_result, similarity = ana.evaluate(pooled_map, shape_index, db, verbose)
         eucl_result[filters.shapes[shape_index]['name']] = euclidian_result
         cosine_result[filters.shapes[shape_index]['name']] = similarity
-        print(f"Euclidian dist confidence {round(euclidian_result * 100)} % for {filters.shapes[shape_index]['name']}")
+        print(f"Euclidian dist confidence {round(euclidian_result * 100, 2)} % for {filters.shapes[shape_index]['name']}")
     # issue final verdict
     vd.verdict(cosine_result, eucl_result)
+    print()
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
@@ -121,11 +122,11 @@ if __name__ == "__main__":
             db = DataBaseInterface('localhost','myapp','postgres','password',5432)
             db.load_trained_data()
             if Path(image_path).is_file():
-                process_and_analyse_image(image_path)
+                process_and_analyse_image(image_path, True)
             elif Path(image_path).is_dir():
                 for image in get_files_from_directory(image_path):
                     print("Processing image:", image)
-                    process_and_analyse_image(image_path + "/" + image)
+                    process_and_analyse_image(image_path + "/" + image, False)
             else:
                 print(f"Error: '{image_path}' is neither a valid file nor a directory")
             db.database_disconnect()

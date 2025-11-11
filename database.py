@@ -75,7 +75,7 @@ class DataBaseInterface():
             print(f"✅ Table '{table_name}' created successfully.")
             self._cursor.execute(create_table_query)
             self._connection .commit()
-            self._cursor.close()
+            self.database_disconnect()
         except psycopg2.OperationalError as e:
             print(f"❌ Cannot connect to database: {e}")
             return False
@@ -88,7 +88,10 @@ class DataBaseInterface():
         """
         Loads the all trained data from filters.py into memory
         """
-        self.database_connect()
+        res = self.database_connect()
+        if res is False:
+            print("❌ Database connection failed, cannot load trained data.")
+            exit(1)
         for shape_index in range(len(filters.shapes)):
             shape = filters.shapes[shape_index]
             for key in shape['filters']:

@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import filters
 
 """
 Module to evaluate pooled outputs against trained patterns
@@ -67,12 +68,12 @@ def display_cosine_result(output):
     @param output: cosine similarity for each applied kernel, (filter)
     """
     for key in output:
-        print("")
-        print("key", key)
-        similarity =  []
+        ## debug print("")
+        ## debug print("key", key)
+        similarity = []
         for c in output[key]:
             similarity.append(c[1])
-        print("max similarity =", max(similarity))
+        print(f"Cosine max similarity '{max(similarity)}' for kernel '{key}'")
 
 """
 using euclidean distance
@@ -135,7 +136,7 @@ def evaluate(pooled_maps, shape_index, db, verbose=False):
             euclidian_result[key] = evaluate_euclidian(trained_filter, pooled_maps[key])
             cosine_result[key] = evaluate_cosine(trained_filter, pooled_maps[key])
     if verbose:
-        print("analyse result for shape ", shape_index + 1)
+        print(f"analyse result for shape '{filters.shapes[shape_index]['name']}'")
         print(euclidian_result)
         display_cosine_result(cosine_result)
 
@@ -150,7 +151,7 @@ def evaluate(pooled_maps, shape_index, db, verbose=False):
             similarity.append(c[1])
         kernel_similarity += max(similarity)
     if verbose:
-        print("sum of kernel similarities", kernel_similarity)
+        print("average of kernel similarities", kernel_similarity)
     return total_matches/len(euclidian_result), kernel_similarity
 
 if __name__ == "__main__":
