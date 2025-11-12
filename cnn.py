@@ -1,6 +1,7 @@
 from PIL import Image, ImageOps
 import numpy as np
 from tensorflow.keras.layers import MaxPooling2D
+import filters
 
 class ConvolutionNN:
     def __init__(self, image_path, verbose=False):
@@ -112,3 +113,46 @@ class ConvolutionNN:
             h_pool, w_pool = self._pooled_map.shape
 
         return self._pooled_map
+    
+"""
+Wrapper class over ConvolutionNN
+"""
+class ImageProcessor:
+    def __init__(self, image_path, width, verbose=False):
+        self._image_path = image_path
+        self._verbose = verbose
+        self._reduce_width = width
+
+    def pre_processing(self):
+        """
+        Pre-process the image: resize, grayscale, invert if needed"""
+        try:
+            self._engine = ConvolutionNN(self._image_path, self._verbose)
+            self._engine.pre_processing(self._reduce_width)
+            return self._engine
+        except FileNotFoundError:
+            print(f"Error: File '{self._image_path}' not found")
+            # Handle the error (set default, raise custom exception, etc.)
+        except Image.UnidentifiedImageError:
+            print(f"Error: '{self._image_path}' is not a valid image file")
+        except PermissionError:
+            print(f"Error: Permission denied accessing '{self._image_path}'")
+        except Exception as e:
+            print(f"Unexpected exception: {e}")
+        return None
+
+    def process(self, shape_index):
+        """
+        Process the image loaded from image_path;
+        returns a map of pooled outputs for each kernel shape
+        @param shape_index : shape number from filters.py
+        """
+        pooled_maps = {}
+        kernel_hash = filters.shapes[shape_index]['filters']
+        for key in kernel_hash:
+            self._engine.kernel_load(kernel_hash[key])
+            # run the convolution algorithm per kernel
+            pooled = self._engine.process(filters.pool_size, filters.stride)
+            pooled_maps[key] = pooled
+        return pooled_maps
+

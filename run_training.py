@@ -1,32 +1,47 @@
-import threading
-import subprocess
+import asyncio
 import filters
 
-def run_thread(folder, shape):
+async def run_task(folder, shape):
     """
-    run in a thread the training process for a folder and a shape
+    run async training process for a folder and a shape
     """
-    print("start trainig data for shape", shape)
-    process = subprocess.Popen(
-        ["python", "main.py", "-t", folder, shape],
-        stdout=subprocess.PIPE,
-        text=True
+    print("start training data for shape", shape)
+    process = await asyncio.create_subprocess_exec(
+        "python", "main.py", "-t", folder, shape,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE
     )
-    for line in process.stdout.readlines():
+    # Read output line by line asynchronously
+    while True:
+        line = await process.stdout.readline()
+        if not line:
+            break
         print(line.strip())
+    await process.wait()
 
-if __name__ == "__main__":
-    threads = []
+async def show(stop_event):
+    timeout = 0
+    while not stop_event.is_set():
+        print('elapsed time ', timeout, " seconds", end='\r')
+        await asyncio.sleep(1)
+        timeout += 1
+    print('elapsed ', timeout, " seconds")
+
+async def main():
+    stop_event = asyncio.Event()
+    # Create the show task
+    show_elapsed_task = asyncio.create_task(show(stop_event))
+    tasks = []
     for shapes in filters.shapes:
-        threads.append(threading.Thread(target = run_thread, args=("training_images/" + shapes['path'], shapes['name'],)))
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
-
+        tasks.append(asyncio.create_task(
+            run_task("training_images/" + shapes['path'], shapes['name']))
+        )
+    # Wait for all training tasks to complete
+    await asyncio.gather(*tasks)
+    # Now stop the timer
+    stop_event.set()
+    await show_elapsed_task
     print("training done!")
 
-# run the following in a separate thread
-#python main.py -t training_images/one_images/ "digit 1"
-#python main.py -t training_images:two_images/ "digit 2"
-#python main.py -t training_images/three_images/ "digit 3"
+if __name__ == "__main__":
+    asyncio.run(main())
