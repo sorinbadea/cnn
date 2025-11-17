@@ -1,209 +1,130 @@
 ✅ Trained data loaded successfully.
-Euclidian dist confidence 0.0 % for digit 1
-Euclidian dist confidence 0.0 % for digit 2
-Euclidian dist confidence 0.0 % for digit 3
-Euclidian dist confidence 0.0 % for digit 0
-Cosine evaluation 'digit 1'
-'Unknown pattern' image in file 'test_images/zero60.png'
-Failed
-
-Euclidian dist confidence 0.0 % for digit 1
-Euclidian dist confidence 14.29 % for digit 2
-Euclidian dist confidence 0.0 % for digit 3
-Euclidian dist confidence 0.0 % for digit 0
-Cosine evaluation 'digit 0'
-'Unknown pattern' image in file 'test_images/car1.jpeg'
-Passed
-
-Euclidian dist confidence 28.57 % for digit 1
-Euclidian dist confidence 28.57 % for digit 2
-Euclidian dist confidence 28.57 % for digit 3
-Euclidian dist confidence 28.57 % for digit 0
-Cosine evaluation 'digit 3'
-'Unknown pattern' image in file 'test_images/house2.jpeg'
-Passed
-
-Euclidian dist confidence 28.57 % for digit 1
-Euclidian dist confidence 42.86 % for digit 2
-Euclidian dist confidence 28.57 % for digit 3
-Euclidian dist confidence 28.57 % for digit 0
-Cosine evaluation 'digit 3'
-'Unknown pattern' image in file 'test_images/human1.jpeg'
-Passed
-
-Euclidian dist confidence 100.0 % for digit 1
+Euclidian dist confidence 85.71 % for digit 1
 Euclidian dist confidence 85.71 % for digit 2
-Euclidian dist confidence 100.0 % for digit 3
+Euclidian dist confidence 85.71 % for digit 3
 Euclidian dist confidence 57.14 % for digit 0
 Cosine evaluation 'digit 1'
-'digit 1' image in file 'test_images/one.jpeg'
-Passed
+'digit 1' image in file 'test_images/car1.jpeg'
 
-Euclidian dist confidence 71.43 % for digit 1
+Euclidian dist confidence 85.71 % for digit 1
 Euclidian dist confidence 85.71 % for digit 2
-Euclidian dist confidence 42.86 % for digit 3
-Euclidian dist confidence 42.86 % for digit 0
-Cosine evaluation 'digit 2'
-'digit 2' image in file 'test_images/three4.jpeg'
-Failed
-
-Euclidian dist confidence 14.29 % for digit 1
-Euclidian dist confidence 42.86 % for digit 2
-Euclidian dist confidence 57.14 % for digit 3
-Euclidian dist confidence 42.86 % for digit 0
-Cosine evaluation 'digit 0'
-'digit 3' image in file 'test_images/three1.png'
-Passed
-
-Euclidian dist confidence 28.57 % for digit 1
-Euclidian dist confidence 42.86 % for digit 2
-Euclidian dist confidence 28.57 % for digit 3
-Euclidian dist confidence 28.57 % for digit 0
-Cosine evaluation 'digit 2'
-'digit 2' image in file 'test_images/one6.png'
-Failed
-
-Euclidian dist confidence 100.0 % for digit 1
-Euclidian dist confidence 0.0 % for digit 2
-Euclidian dist confidence 0.0 % for digit 3
-Euclidian dist confidence 0.0 % for digit 0
-Cosine evaluation 'digit 1'
-'digit 1' image in file 'test_images/one2.jpeg'
-Passed
-
-Euclidian dist confidence 100.0 % for digit 1
-Euclidian dist confidence 100.0 % for digit 2
-Euclidian dist confidence 100.0 % for digit 3
+Euclidian dist confidence 71.43 % for digit 3
 Euclidian dist confidence 71.43 % for digit 0
 Cosine evaluation 'digit 1'
-'digit 1' image in file 'test_images/one4.png'
-Passed
+'digit 1' image in file 'test_images/house2.jpeg'
 
-Euclidian dist confidence 57.14 % for digit 1
-Euclidian dist confidence 71.43 % for digit 2
-Euclidian dist confidence 57.14 % for digit 3
-Euclidian dist confidence 57.14 % for digit 0
-Cosine evaluation 'digit 3'
-'digit 3' image in file 'test_images/three3.png'
-Passed
-
-Euclidian dist confidence 100.0 % for digit 1
-Euclidian dist confidence 57.14 % for digit 2
-Euclidian dist confidence 28.57 % for digit 3
-Euclidian dist confidence 42.86 % for digit 0
+Euclidian dist confidence 28.57 % for digit 1
+Euclidian dist confidence 42.86 % for digit 2
+Euclidian dist confidence 14.29 % for digit 3
+Euclidian dist confidence 0.0 % for digit 0
 Cosine evaluation 'digit 1'
-'digit 1' image in file 'test_images/one5.png'
-Passed
+'Unknown pattern' image in file 'test_images/human1.jpeg'
+
+Euclidian dist confidence 28.57 % for digit 1
+Euclidian dist confidence 57.14 % for digit 2
+Euclidian dist confidence 71.43 % for digit 3
+Euclidian dist confidence 100.0 % for digit 0
+Cosine evaluation 'digit 0'
+'digit 0' image in file 'test_images/zero24.jpeg'
+
+Error: 'test_images/.DS_Store' is not a valid image file
+❌ Error processing image 'test_images/.DS_Store'
+
+Euclidian dist confidence 0.0 % for digit 1
+Euclidian dist confidence 42.86 % for digit 2
+Euclidian dist confidence 71.43 % for digit 3
+Euclidian dist confidence 42.86 % for digit 0
+Cosine evaluation 'digit 2'
+'digit 2' image in file 'test_images/three_3.png'
+
+Euclidian dist confidence 71.43 % for digit 1
+Euclidian dist confidence 100.0 % for digit 2
+Euclidian dist confidence 57.14 % for digit 3
+Euclidian dist confidence 85.71 % for digit 0
+Cosine evaluation 'digit 2'
+'digit 2' image in file 'test_images/two_7.jpeg'
 
 Euclidian dist confidence 0.0 % for digit 1
 Euclidian dist confidence 0.0 % for digit 2
 Euclidian dist confidence 0.0 % for digit 3
 Euclidian dist confidence 0.0 % for digit 0
 Cosine evaluation 'digit 2'
-'Unknown pattern' image in file 'test_images/one3.jpeg'
-Failed
+'Unknown pattern' image in file 'test_images/zero17.png'
 
-Euclidian dist confidence 100.0 % for digit 1
-Euclidian dist confidence 85.71 % for digit 2
-Euclidian dist confidence 100.0 % for digit 3
-Euclidian dist confidence 85.71 % for digit 0
-Cosine evaluation 'digit 3'
-'digit 3' image in file 'test_images/three2.jpeg'
-Passed
+Euclidian dist confidence 42.86 % for digit 1
+Euclidian dist confidence 57.14 % for digit 2
+Euclidian dist confidence 85.71 % for digit 3
+Euclidian dist confidence 42.86 % for digit 0
+Cosine evaluation 'digit 2'
+'digit 2' image in file 'test_images/house.jpeg'
 
-Euclidian dist confidence 71.43 % for digit 1
-Euclidian dist confidence 71.43 % for digit 2
-Euclidian dist confidence 57.14 % for digit 3
-Euclidian dist confidence 57.14 % for digit 0
-Cosine evaluation 'digit 1'
-'digit 1' image in file 'test_images/house.jpeg'
-Failed
-
-Euclidian dist confidence 28.57 % for digit 1
+Euclidian dist confidence 14.29 % for digit 1
 Euclidian dist confidence 100.0 % for digit 2
 Euclidian dist confidence 85.71 % for digit 3
 Euclidian dist confidence 42.86 % for digit 0
 Cosine evaluation 'digit 2'
 'digit 2' image in file 'test_images/two3.png'
-Passed
-
-Euclidian dist confidence 85.71 % for digit 1
-Euclidian dist confidence 100.0 % for digit 2
-Euclidian dist confidence 71.43 % for digit 3
-Euclidian dist confidence 100.0 % for digit 0
-Cosine evaluation 'digit 2'
-'digit 2' image in file 'test_images/zero20.jpeg'
-Failed
-
-Euclidian dist confidence 57.14 % for digit 1
-Euclidian dist confidence 71.43 % for digit 2
-Euclidian dist confidence 57.14 % for digit 3
-Euclidian dist confidence 28.57 % for digit 0
-Cosine evaluation 'digit 2'
-'digit 2' image in file 'test_images/two_5.jpeg'
-Passed
-
-Euclidian dist confidence 100.0 % for digit 1
-Euclidian dist confidence 100.0 % for digit 2
-Euclidian dist confidence 100.0 % for digit 3
-Euclidian dist confidence 100.0 % for digit 0
-Cosine evaluation 'digit 2'
-'digit 2' image in file 'test_images/two_4.jpeg'
-Passed
-
-Euclidian dist confidence 100.0 % for digit 1
-Euclidian dist confidence 100.0 % for digit 2
-Euclidian dist confidence 100.0 % for digit 3
-Euclidian dist confidence 100.0 % for digit 0
-Cosine evaluation 'digit 0'
-'digit 0' image in file 'test_images/zero32.png'
-Passed
-
-Euclidian dist confidence 42.86 % for digit 1
-Euclidian dist confidence 28.57 % for digit 2
-Euclidian dist confidence 14.29 % for digit 3
-Euclidian dist confidence 57.14 % for digit 0
-Cosine evaluation 'digit 2'
-'digit 0' image in file 'test_images/zero26.jpeg'
-Passed
-
-Euclidian dist confidence 100.0 % for digit 1
-Euclidian dist confidence 100.0 % for digit 2
-Euclidian dist confidence 100.0 % for digit 3
-Euclidian dist confidence 100.0 % for digit 0
-Cosine evaluation 'digit 2'
-'digit 2' image in file 'test_images/two_2.jpeg'
-Passed
-
-Euclidian dist confidence 42.86 % for digit 1
-Euclidian dist confidence 100.0 % for digit 2
-Euclidian dist confidence 71.43 % for digit 3
-Euclidian dist confidence 71.43 % for digit 0
-Cosine evaluation 'digit 2'
-'digit 2' image in file 'test_images/human2.jpeg'
-Failed
 
 Euclidian dist confidence 0.0 % for digit 1
 Euclidian dist confidence 0.0 % for digit 2
-Euclidian dist confidence 0.0 % for digit 3
+Euclidian dist confidence 28.57 % for digit 3
+Euclidian dist confidence 14.29 % for digit 0
+Cosine evaluation 'digit 3'
+'digit 3' image in file 'test_images/three72.png'
+
+Euclidian dist confidence 71.43 % for digit 1
+Euclidian dist confidence 57.14 % for digit 2
+Euclidian dist confidence 28.57 % for digit 3
 Euclidian dist confidence 14.29 % for digit 0
 Cosine evaluation 'digit 1'
-'Unknown pattern' image in file 'test_images/ship.jpeg'
-Passed
+'digit 1' image in file 'test_images/one_51.png'
 
-Euclidian dist confidence 100.0 % for digit 1
-Euclidian dist confidence 14.29 % for digit 2
+Euclidian dist confidence 57.14 % for digit 1
+Euclidian dist confidence 85.71 % for digit 2
+Euclidian dist confidence 42.86 % for digit 3
+Euclidian dist confidence 28.57 % for digit 0
+Cosine evaluation 'digit 1'
+'digit 1' image in file 'test_images/one70.png'
+
+Euclidian dist confidence 57.14 % for digit 1
+Euclidian dist confidence 57.14 % for digit 2
+Euclidian dist confidence 42.86 % for digit 3
+Euclidian dist confidence 100.0 % for digit 0
+Cosine evaluation 'digit 2'
+'digit 0' image in file 'test_images/zero9.png'
+
+Euclidian dist confidence 71.43 % for digit 1
+Euclidian dist confidence 85.71 % for digit 2
+Euclidian dist confidence 85.71 % for digit 3
+Euclidian dist confidence 57.14 % for digit 0
+Cosine evaluation 'digit 1'
+'digit 1' image in file 'test_images/three77.png'
+
+Euclidian dist confidence 42.86 % for digit 1
+Euclidian dist confidence 71.43 % for digit 2
 Euclidian dist confidence 0.0 % for digit 3
 Euclidian dist confidence 0.0 % for digit 0
 Cosine evaluation 'digit 1'
-'digit 1' image in file 'test_images/one7.jpeg'
-Passed
+'digit 1' image in file 'test_images/one_32.png'
 
 Euclidian dist confidence 42.86 % for digit 1
-Euclidian dist confidence 100.0 % for digit 2
-Euclidian dist confidence 85.71 % for digit 3
+Euclidian dist confidence 71.43 % for digit 2
+Euclidian dist confidence 42.86 % for digit 3
+Euclidian dist confidence 14.29 % for digit 0
+Cosine evaluation 'digit 3'
+'digit 3' image in file 'test_images/human2.jpeg'
+
+Euclidian dist confidence 14.29 % for digit 1
+Euclidian dist confidence 14.29 % for digit 2
+Euclidian dist confidence 28.57 % for digit 3
+Euclidian dist confidence 14.29 % for digit 0
+Cosine evaluation 'digit 1'
+'Unknown pattern' image in file 'test_images/ship.jpeg'
+
+Euclidian dist confidence 14.29 % for digit 1
+Euclidian dist confidence 57.14 % for digit 2
+Euclidian dist confidence 57.14 % for digit 3
 Euclidian dist confidence 71.43 % for digit 0
 Cosine evaluation 'digit 2'
-'digit 2' image in file 'test_images/two_6.png'
-Passed
+'digit 2' image in file 'test_images/two_69.png'
 

@@ -22,10 +22,10 @@ async def run_task(folder, shape):
 async def show(stop_event):
     timeout = 0
     while not stop_event.is_set():
-        print('elapsed time ', timeout, " seconds", end='\r')
+        print('elapsed time',timeout,'seconds',end='\r')
         await asyncio.sleep(1)
         timeout += 1
-    print('elapsed ', timeout, " seconds")
+    print(f"elapsed {timeout} seconds")
 
 async def main():
     stop_event = asyncio.Event()

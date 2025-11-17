@@ -142,8 +142,8 @@ def evaluate(pooled_maps, shape_index, db, verbose=False):
 
     ## evaluate the euclidian results
     total_matches = sum(1 for m in [ euclidian_result[key][0] for key in euclidian_result ] if m > 0)
+
     ## evaluate the cosine results
-    ### display_cosine_result(cosine_result)
     kernel_similarity  = 0
     for key in cosine_result:
         similarity = []

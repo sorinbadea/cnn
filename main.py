@@ -45,7 +45,8 @@ def process_and_analyse_image(image_path, verbose=False):
     """
     img_processor = cnn.ImageProcessor(image_path, REDUCED_WIDTH, False)
     if img_processor.pre_processing() == None:
-        sys.exit(1)
+        print(f"❌ Error processing image '{image_path}'")
+        return
     for shape_index in range(len(filters.shapes)):
         pooled_map = img_processor.process(shape_index)
         """
