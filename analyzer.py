@@ -109,15 +109,14 @@ def evaluate_euclidian(trained_filter, input_pooled):
     """
     matches = 0
     not_matches = 0
-    min_distance = 255.0
+    min_distance = []
     for pooled_row, trained_row in iterate_in_samples(trained_filter, input_pooled):
         match, distance = is_match_distance(trained_row, pooled_row)
         matches += int(match)
         not_matches += int(not match)
         # evaluate the minial distance for this kernel
-        if min_distance > round(distance.item(), 2):
-            min_distance = round(distance.item(), 2)
-    return matches, not_matches, min_distance
+        min_distance.append(round(distance,2))
+    return matches, not_matches, min(min_distance)
 
 def evaluate(pooled_maps, shape_index, db, verbose=False):
     """
@@ -137,7 +136,15 @@ def evaluate(pooled_maps, shape_index, db, verbose=False):
             cosine_result[key] = evaluate_cosine(trained_filter, pooled_maps[key])
     if verbose:
         print(f"analyse result for shape '{filters.shapes[shape_index]['name']}'")
+        print("=============================================")
+        # display the euclidian evaluation
         print(euclidian_result)
+
+        # display the minimal euclidian distance
+        avg_min_dist = round(sum(euclidian_result[key][2] for key in euclidian_result)/len(euclidian_result),2)
+        print("average of minimal euclidian distances", avg_min_dist)
+
+        # display the cosine evaluation
         display_cosine_result(cosine_result)
 
     ## evaluate the euclidian results
@@ -151,7 +158,7 @@ def evaluate(pooled_maps, shape_index, db, verbose=False):
             similarity.append(c[1])
         kernel_similarity += max(similarity)
     if verbose:
-        print("average of kernel similarities", kernel_similarity)
+        print("total of cosine kernel similarities", kernel_similarity)
     return total_matches/len(euclidian_result), kernel_similarity
 
 if __name__ == "__main__":

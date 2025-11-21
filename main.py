@@ -2,7 +2,6 @@ import cnn
 import sys
 import os
 import filters
-from PIL import Image
 from pathlib import Path
 import database as data
 import analyzer as ana
@@ -55,7 +54,7 @@ def process_and_analyse_image(image_path, verbose=False):
         euclidian_result, similarity = ana.evaluate(pooled_map, shape_index, db, verbose)
         eucl_result[filters.shapes[shape_index]['name']] = euclidian_result
         cosine_result[filters.shapes[shape_index]['name']] = similarity
-        print(f"Euclidian dist confidence {round(euclidian_result * 100, 2)} % for {filters.shapes[shape_index]['name']}")
+        print(f"Euclidian evaluation confidence {round(euclidian_result * 100, 2)} % for {filters.shapes[shape_index]['name']}")
 
     # issue verdict
     print(f"Cosine evaluation '{max(cosine_result, key=cosine_result.get)}'")

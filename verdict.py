@@ -2,14 +2,14 @@
 verdict module, issue the final verdict based on analyzer results
 """
 
-def check_other_shapes(eucl_results, shape_of_100):
+def check_100_shapes(eucl_results, shape_of_100):
     """
-    check if other shapes have euclidian distance over treshold
+    check if a unique shape has 100 % euclidian confidence
     @param eucl_results - hash of euclidian results/shape
     @param shape_of_100 - shape name which has 100 % euclidian confidence
     """
     shapes_with_100 = [key for key in eucl_results if round(eucl_results[key]*100, 2) == 100.0]
-    if len(shapes_with_100) is 1 and shapes_with_100[0] is shape_of_100:
+    if len(shapes_with_100) == 1 and shapes_with_100[0] == shape_of_100:
         return True
     return False
 
@@ -32,7 +32,7 @@ def verdict(cosine_result, eucl_result):
 
     result = "Unknown pattern"
 
-    if check_other_shapes(eucl_result, eucl_dist_match):
+    if check_100_shapes(eucl_result, eucl_dist_match):
         # only one shape has 100 % euclidian confidence, ignore cosine evaluation
         result = eucl_dist_match
         #print(eucl_dist_match, " with euclidian distance confidence of", max_eucl_percent, "% and cosine evaluation", cosine_match)

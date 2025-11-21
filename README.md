@@ -4,8 +4,8 @@
    A postgres sql running container is mandatory, for that a Dockerfile is provided in pg-sql-docker.
    For evaluation it combines the euclidian distance computation and the cosine prediction
 
-   Overall confidence results for digit "1", "2", "3" and "0" recognition is now 60% but what matters
-the most are the training set vs test set and the kernels applied
+   Overall confidence results for digit "1", "2", "3" and "0" recognition is now 66% but what matters
+the most is the training set vs test set and the kernels applied
 
    It is highly recommended to set-up a python virtual environment for: tensorflow, psycopg2 and PIL and numpy are used for implementation.
 
