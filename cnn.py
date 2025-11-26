@@ -18,7 +18,7 @@ class ConvolutionNN:
         self._kernel = np.array(array)
         self._kernel_rows, self._kernel_cols = self._kernel.shape
 
-    def pre_processing(self, width = 48):
+    def pre_processing(self, width=128):
         """
         resize image, convert to gray-scale
         @param width: image width to resize

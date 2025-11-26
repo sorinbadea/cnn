@@ -42,6 +42,9 @@ def process_and_analyse_image(image_path, verbose=False):
     process and analyse a single image
     @param image_path: path to the image file
     """
+    eucl_result = {}
+    cosine_result = {}
+    avg_eucl_result = {}
     img_processor = cnn.ImageProcessor(image_path, REDUCED_WIDTH, False)
     if img_processor.pre_processing() == None:
         print(f"❌ Error processing image '{image_path}'")
@@ -49,15 +52,20 @@ def process_and_analyse_image(image_path, verbose=False):
     for shape_index in range(len(filters.shapes)):
         pooled_map = img_processor.process(shape_index)
         """
-        call the analyzer module
+        call the analyzer module,
         """
-        euclidian_result, similarity = ana.evaluate(pooled_map, shape_index, db, verbose)
-        eucl_result[filters.shapes[shape_index]['name']] = euclidian_result
-        cosine_result[filters.shapes[shape_index]['name']] = similarity
-        print(f"Euclidian evaluation confidence {round(euclidian_result * 100, 2)} % for {filters.shapes[shape_index]['name']}")
+        euclidian, cosine = ana.evaluate(pooled_map, shape_index, db, verbose)
+        """
+        fill all the results for verdict processing
+        """
+        eucl_result[filters.shapes[shape_index]['name']] = euclidian
+        cosine_result[filters.shapes[shape_index]['name']] = cosine
+        print(f"Euclidian evaluation confidence {round(euclidian * 100, 2)} % for {filters.shapes[shape_index]['name']}")
 
     # issue verdict
-    print(f"Cosine evaluation '{max(cosine_result, key=cosine_result.get)}'")
+    print("Results")
+    print("=======")
+    print(f"--> Cosine evaluation '{max(cosine_result, key=cosine_result.get)}'")
     res = vd.verdict(cosine_result, eucl_result)
     print(f"'{res}' image in file '{image_path}'")
 
@@ -70,7 +78,7 @@ if __name__ == "__main__":
         single image processing mode
         """
         image_path = sys.argv[2]
-        img_processor = cnn.ImageProcessor(image_path, REDUCED_WIDTH, True)
+        img_processor = cnn.ImageProcessor(image_path, REDUCED_WIDTH, False)
         if img_processor.pre_processing() == None:
             sys.exit(1)
         for shape_index in range(len(filters.shapes)):
@@ -85,8 +93,6 @@ if __name__ == "__main__":
 
     elif sys.argv[1] == "-a":
         image_path = sys.argv[2]
-        eucl_result = {}
-        cosine_result = {}
         db = DataBaseInterface('localhost','myapp','postgres','password',5432)
         db.load_trained_data()
         if Path(image_path).is_file():

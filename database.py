@@ -108,13 +108,8 @@ class DataBaseInterface():
 
 if __name__ == "__main__":
     db = DataBaseInterface('localhost','myapp','postgres','password',5432)
-    for shape_index in range(len(filters.shapes)):
-        for key in filters.shapes[shape_index]['filters']:
-            print("")
-            array = db.get_data(key)
-            if array:
-                print("filter:", key)
-                for row in array:
-                    print("-----------------")
-                    for item in row:
-                            print(item)
+    db.database_connect()
+    res = db.get_data('digit_1_filter_1')
+    for row in res:
+        print("res=", row)
+    db.database_disconnect()

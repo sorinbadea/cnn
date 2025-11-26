@@ -27,7 +27,7 @@ def cosine_similarity(trained_data, new_data):
     def magnitude(X):
         sum_squares = 0
         for x_i in X:
-            sum_squares += x_i ** 2
+            sum_squares += math.pow(x_i, 2)
         return math.sqrt(sum_squares)
 
     mag_X = magnitude(new_data)
@@ -109,14 +109,11 @@ def evaluate_euclidian(trained_filter, input_pooled):
     """
     matches = 0
     not_matches = 0
-    min_distance = []
     for pooled_row, trained_row in iterate_in_samples(trained_filter, input_pooled):
         match, distance = is_match_distance(trained_row, pooled_row)
         matches += int(match)
         not_matches += int(not match)
-        # evaluate the minial distance for this kernel
-        min_distance.append(round(distance,2))
-    return matches, not_matches, min(min_distance)
+    return matches, not_matches
 
 def evaluate(pooled_maps, shape_index, db, verbose=False):
     """
@@ -134,22 +131,17 @@ def evaluate(pooled_maps, shape_index, db, verbose=False):
         else:
             euclidian_result[key] = evaluate_euclidian(trained_filter, pooled_maps[key])
             cosine_result[key] = evaluate_cosine(trained_filter, pooled_maps[key])
+
     if verbose:
         print(f"analyse result for shape '{filters.shapes[shape_index]['name']}'")
-        print("=============================================")
+        print("========================================")
         # display the euclidian evaluation
         print(euclidian_result)
-
-        # display the minimal euclidian distance
-        avg_min_dist = round(sum(euclidian_result[key][2] for key in euclidian_result)/len(euclidian_result),2)
-        print("average of minimal euclidian distances", avg_min_dist)
-
         # display the cosine evaluation
         display_cosine_result(cosine_result)
 
     ## evaluate the euclidian results
     total_matches = sum(1 for m in [ euclidian_result[key][0] for key in euclidian_result ] if m > 0)
-
     ## evaluate the cosine results
     kernel_similarity  = 0
     for key in cosine_result:
