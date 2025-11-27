@@ -93,17 +93,16 @@ if __name__ == "__main__":
 
     elif sys.argv[1] == "-a":
         image_path = sys.argv[2]
-        db = DataBaseInterface('localhost','myapp','postgres','password',5432)
-        db.load_trained_data()
-        if Path(image_path).is_file():
-            process_and_analyse_image(image_path, True)
-        elif Path(image_path).is_dir():
-            for image in get_files_from_directory(image_path):
-                process_and_analyse_image(image_path + "/" + image, False)
-                print()
-        else:
-            print(f"Error: '{image_path}' is neither a valid file nor a directory")
-        db.database_disconnect()
+        with DataBaseInterface('localhost','myapp','postgres','password',5432) as db:
+            db.load_trained_data()
+            if Path(image_path).is_file():
+                process_and_analyse_image(image_path, True)
+            elif Path(image_path).is_dir():
+                for image in get_files_from_directory(image_path):
+                    process_and_analyse_image(image_path + "/" + image, False)
+                    print()
+            else:
+                print(f"Error: '{image_path}' is neither a valid file nor a directory")
 
     elif sys.argv[1] == "-t":
         if len(sys.argv) < 4:
@@ -116,24 +115,30 @@ if __name__ == "__main__":
         training mode, update a table with pooled data for each kernel shape
         """
         shape_index = get_shape_index(sys.argv[3])
-        db = data.DataBaseInterface('localhost','myapp','postgres','password',5432)
-        for key in filters.shapes[shape_index]['filters']:
-            if db.create_table(key) is False:
-                print(f"❌ Error creating table '{key}', exit training process")
-                sys.exit(1)
-        """
-        start processing all images in the specified folder
-        """
-        for image in get_files_from_directory(image_path):
-            img_processor = cnn.ImageProcessor(image_path + "/" + image, REDUCED_WIDTH, False)
-            if img_processor.pre_processing() == None:
-                continue
-            print("Processing image:", image)
-            polled_map = img_processor.process(shape_index)
-            for key in polled_map:
-                for row in polled_map[key]:
-                    # convert from numpy array to list
-                    res = db.insert_data(key, row.tolist())
+        # database connection
+        with data.DataBaseInterface('localhost','myapp','postgres','password',5432) as db:
+            # cleanup tables
+            for key in filters.shapes[shape_index]['filters']:
+                if db.create_table(key) is False:
+                    print(f"❌ Error creating table '{key}', exit training process")
+                    sys.exit(1)
+            """
+            start processing all images in the specified folder
+            """
+            for image in get_files_from_directory(image_path):
+                img_processor = cnn.ImageProcessor(image_path + "/" + image, REDUCED_WIDTH, False)
+                if img_processor.pre_processing() == None:
+                    continue
+                print("Processing image:", image)
+                polled_map = img_processor.process(shape_index)
+                for key in polled_map:
+                    for row in polled_map[key]:
+                        # convert from numpy array to list
+                        res = db.insert_data(key, row.tolist())
+                        if res is False:
+                            print(f"❌ Error inserting data into table '{key}'")
+                    ## insert a marker for end of shape
+                    res = db.insert_data(key, [0.0, 0.0, 0.0, 0.0, 0.0])
                     if res is False:
                         print(f"❌ Error inserting data into table '{key}'")
     else:

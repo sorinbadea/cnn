@@ -14,6 +14,15 @@ class DataBaseInterface():
         self._cursor = None
         self._trained_data = {}
 
+    def __enter__(self):
+        if self.database_connect() is False:
+            print(f"❌ Error connecting to database")
+            sys.exit(1)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+         self.database_disconnect()
+
     def database_connect(self):
         try:
             self._connection = psycopg2.connect(
@@ -52,11 +61,8 @@ class DataBaseInterface():
 
     def insert_data(self, table_name, data):
         try:
-            self.database_connect()
             self._cursor.execute("INSERT INTO " + table_name + " (samples) VALUES (%s)", (data,))
-            ## print(f"✅ Data inserted into '{table_name}' successfully.")
             self._connection.commit()
-            self.database_disconnect()
         except psycopg2.OperationalError as e:
             print(f"❌ Cannot connect to database: {e}")
             return False
@@ -67,7 +73,6 @@ class DataBaseInterface():
 
     def create_table(self, table_name):
         try:
-            self.database_connect()
             drop_table_query = f"DROP TABLE IF EXISTS {table_name} CASCADE;"
             self._cursor.execute(drop_table_query)
             print(f"✅ Table '{table_name}' dropped successfully.")
@@ -75,7 +80,6 @@ class DataBaseInterface():
             print(f"✅ Table '{table_name}' created successfully.")
             self._cursor.execute(create_table_query)
             self._connection .commit()
-            self.database_disconnect()
         except psycopg2.OperationalError as e:
             print(f"❌ Cannot connect to database: {e}")
             return False
@@ -88,16 +92,11 @@ class DataBaseInterface():
         """
         Loads the all trained data from filters.py into memory
         """
-        res = self.database_connect()
-        if res is False:
-            print("❌ Database connection failed, cannot load trained data.")
-            exit(1)
         for shape_index in range(len(filters.shapes)):
             shape = filters.shapes[shape_index]
             for key in shape['filters']:
                 self._trained_data[key] = self.get_data(key)
         print("✅ Trained data loaded successfully.")
-        self.database_disconnect()
 
     def get_trained_data(self, key):
         """

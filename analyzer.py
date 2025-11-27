@@ -13,29 +13,19 @@ using cosine
 
 def cosine_similarity(trained_data, new_data):
     """
-    evaluare cosine similarity new data vs traoined data
+    evaluare cosine similarity new data vs trained data
     @param: trained data; data already processed
     @param new_data : new data obtained via convolution
     """
-    # helpers
-    def inner_prod(X, Y):
-        sum_prod = 0
-        for x_i, y_i in zip(X, Y):
-            sum_prod += x_i * y_i
-        return sum_prod
-
-    def magnitude(X):
-        sum_squares = 0
-        for x_i in X:
-            sum_squares += math.pow(x_i, 2)
-        return math.sqrt(sum_squares)
-
-    mag_X = magnitude(new_data)
-    mag_Y = magnitude(trained_data)
+    A = np.array(new_data)
+    B = np.array(trained_data)
+    # Calculate norms
+    norm_A = np.linalg.norm(A)
+    norm_B = np.linalg.norm(B)
     # Check if either magnitude is zero or very close to zero
-    if mag_X == 0 or mag_Y == 0:
+    if norm_A == 0.0 or norm_B == 0.0:
         return 0.0
-    return inner_prod(new_data, trained_data) / (mag_X * mag_Y)
+    return np.dot(A, B) / (norm_A * norm_B)
 
 def get_similarity(trained_data, new_data):
     """
