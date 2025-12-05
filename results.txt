@@ -26,8 +26,7 @@ Results
 --> Cosine evaluation 'digit 0'
 'digit 0' image in file 'test_images/zero24.jpeg'
 
-Error: 'test_images/.DS_Store' is not a valid image file
-❌ Error processing image 'test_images/.DS_Store'
+Unexpected exception during processing image 'test_images/.DS_Store': cannot identify image file 'test_images/.DS_Store'
 
 Euclidian evaluation confidence 14.29 % for digit 1
 Euclidian evaluation confidence 14.29 % for digit 2
@@ -38,10 +37,10 @@ Results
 --> Cosine evaluation 'digit 2'
 'Unknown pattern' image in file 'test_images/house2.png'
 
-Euclidian evaluation confidence 0.0 % for digit 1
-Euclidian evaluation confidence 42.86 % for digit 2
+Euclidian evaluation confidence 28.57 % for digit 1
+Euclidian evaluation confidence 71.43 % for digit 2
 Euclidian evaluation confidence 71.43 % for digit 3
-Euclidian evaluation confidence 42.86 % for digit 0
+Euclidian evaluation confidence 57.14 % for digit 0
 Results
 =======
 --> Cosine evaluation 'digit 2'
@@ -76,15 +75,15 @@ Results
 
 Euclidian evaluation confidence 0.0 % for digit 1
 Euclidian evaluation confidence 0.0 % for digit 2
-Euclidian evaluation confidence 28.57 % for digit 3
-Euclidian evaluation confidence 14.29 % for digit 0
+Euclidian evaluation confidence 42.86 % for digit 3
+Euclidian evaluation confidence 0.0 % for digit 0
 Results
 =======
 --> Cosine evaluation 'digit 3'
 'digit 3' image in file 'test_images/three72.png'
 
-Euclidian evaluation confidence 71.43 % for digit 1
-Euclidian evaluation confidence 57.14 % for digit 2
+Euclidian evaluation confidence 85.71 % for digit 1
+Euclidian evaluation confidence 71.43 % for digit 2
 Euclidian evaluation confidence 28.57 % for digit 3
 Euclidian evaluation confidence 14.29 % for digit 0
 Results
@@ -138,7 +137,7 @@ Results
 'digit 3' image in file 'test_images/human2.jpeg'
 
 Euclidian evaluation confidence 14.29 % for digit 1
-Euclidian evaluation confidence 14.29 % for digit 2
+Euclidian evaluation confidence 0.0 % for digit 2
 Euclidian evaluation confidence 28.57 % for digit 3
 Euclidian evaluation confidence 14.29 % for digit 0
 Results

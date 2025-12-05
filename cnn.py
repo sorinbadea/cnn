@@ -16,7 +16,6 @@ class ConvolutionNN:
         @array: kernel pattern
         """
         self._kernel = np.array(array)
-        self._kernel_rows, self._kernel_cols = self._kernel.shape
 
     def pre_processing(self, width=128):
         """
@@ -52,9 +51,9 @@ class ConvolutionNN:
         @pool_stride: value to shift on the right and down on each step of max pooling
         """
         h, w = self._activated_map.shape
-        self._activated_map = self._activated_map.reshape(1, h, w, 1)
+        map = self._activated_map.reshape(1, h, w, 1)
         max_pool = MaxPooling2D(pool_size=(pool_size, pool_size), strides=pool_stride, padding='same')
-        pooled_map = max_pool(self._activated_map)
+        pooled_map = max_pool(map)
         return pooled_map.numpy().squeeze()
 
     def process(self, pool_size, pool_stride):
@@ -64,7 +63,8 @@ class ConvolutionNN:
         param @pool_size: the size, (width and height) of the pooling array
         param @pool_stride: value to shift on the right and down on each step of max pooling
         """
-        normalized_array = np.round(self._array/255, 2)
+        normalized_array = self._array/255.0
+        self.print_array("Normalized image matrix", normalized_array)
         self._feature_map = convolve2d(normalized_array, self._kernel, mode='valid')
         self.print_array("Feature map", self._feature_map)
     
@@ -98,21 +98,10 @@ class ImageProcessor:
 
     def pre_processing(self):
         """
-        Pre-process the image: resize, grayscale, invert if needed"""
-        try:
-            self._engine = ConvolutionNN(self._image_path, self._verbose)
-            self._engine.pre_processing(self._reduce_width)
-            return self._engine
-        except FileNotFoundError:
-            print(f"Error: File '{self._image_path}' not found")
-            # Handle the error (set default, raise custom exception, etc.)
-        except Image.UnidentifiedImageError:
-            print(f"Error: '{self._image_path}' is not a valid image file")
-        except PermissionError:
-            print(f"Error: Permission denied accessing '{self._image_path}'")
-        except Exception as e:
-            print(f"Unexpected exception: {e}")
-        return None
+        Pre-process the image: resize, grayscale, invert if needed
+        """
+        self._engine = ConvolutionNN(self._image_path, self._verbose)
+        self._engine.pre_processing(self._reduce_width)
 
     def process(self, shape_index):
         """

@@ -75,7 +75,7 @@ def euclidean_distance(vec1, vec2):
 
 def is_match_distance(trained_values, new_values):
     """Check if new values match within distance threshold"""
-    distance = euclidean_distance(new_values, trained_values)
+    distance = euclidean_distance(trained_values, new_values)
     # try to evaluate an appropiate threshold
     nv_average = np.sum(np.array(new_values))/len(new_values)
     threshold = nv_average * 0.09

@@ -53,7 +53,7 @@ class DataBaseInterface():
             rows = self._cursor.fetchall()
             return rows
         except psycopg2.OperationalError as e:
-            print(f"❌ Cannot connect to database: {e}")
+            print(f"❌ Cannot read from database: {e}")
             return False
         except Exception as e:
             print(f"❌ Unexpected error: {e}")
@@ -64,7 +64,7 @@ class DataBaseInterface():
             self._cursor.execute("INSERT INTO " + table_name + " (samples) VALUES (%s)", (data,))
             self._connection.commit()
         except psycopg2.OperationalError as e:
-            print(f"❌ Cannot connect to database: {e}")
+            print(f"❌ Cannot update database: {e}")
             return False
         except Exception as e:
             print(f"❌ Unexpected error: {e}")
@@ -81,7 +81,7 @@ class DataBaseInterface():
             self._cursor.execute(create_table_query)
             self._connection .commit()
         except psycopg2.OperationalError as e:
-            print(f"❌ Cannot connect to database: {e}")
+            print(f"❌ Cannot update database: {e}")
             return False
         except Exception as e:
             print(f"❌ Unexpected error: {e}")

@@ -44,23 +44,25 @@ def process_and_analyse_image(image_path, verbose=False):
     """
     eucl_result = {}
     cosine_result = {}
-    avg_eucl_result = {}
-    img_processor = cnn.ImageProcessor(image_path, REDUCED_WIDTH, False)
-    if img_processor.pre_processing() == None:
-        print(f"❌ Error processing image '{image_path}'")
+    img_processor = cnn.ImageProcessor(image_path, REDUCED_WIDTH, verbose)
+    try:
+        img_processor.pre_processing()
+        for shape_index in range(len(filters.shapes)):
+            pooled_map = img_processor.process(shape_index)
+            """
+            call the analyzer module,
+            """
+            euclidian, cosine = ana.evaluate(pooled_map, shape_index, db, verbose)
+            """
+            fill all the results for verdict processing
+            """
+            eucl_result[filters.shapes[shape_index]['name']] = euclidian
+            cosine_result[filters.shapes[shape_index]['name']] = cosine
+            print(f"Euclidian evaluation confidence {round(euclidian * 100, 2)} % for {filters.shapes[shape_index]['name']}")
+
+    except Exception as e:
+        print(f"Unexpected exception during processing image '{image_path}': {e}")
         return
-    for shape_index in range(len(filters.shapes)):
-        pooled_map = img_processor.process(shape_index)
-        """
-        call the analyzer module,
-        """
-        euclidian, cosine = ana.evaluate(pooled_map, shape_index, db, verbose)
-        """
-        fill all the results for verdict processing
-        """
-        eucl_result[filters.shapes[shape_index]['name']] = euclidian
-        cosine_result[filters.shapes[shape_index]['name']] = cosine
-        print(f"Euclidian evaluation confidence {round(euclidian * 100, 2)} % for {filters.shapes[shape_index]['name']}")
 
     # issue verdict
     print("Results")
@@ -78,18 +80,20 @@ if __name__ == "__main__":
         single image processing mode
         """
         image_path = sys.argv[2]
-        img_processor = cnn.ImageProcessor(image_path, REDUCED_WIDTH, False)
-        if img_processor.pre_processing() == None:
-            sys.exit(1)
-        for shape_index in range(len(filters.shapes)):
-            print("shape index ", shape_index + 1)
-            pooled_map = img_processor.process(shape_index)
-            # display results
-            for key in pooled_map:
-                print("Pooled output for kernel:", key)
-                for row in pooled_map[key]:
-                    print(row)
-        print("Processing completed.")
+        img_processor = cnn.ImageProcessor(image_path, REDUCED_WIDTH, True)
+        try:
+            img_processor.pre_processing()
+            for shape_index in range(len(filters.shapes)):
+                print("shape index ", shape_index + 1)
+                pooled_map = img_processor.process(shape_index)
+                # display results
+                for key in pooled_map:
+                    print("Pooled output for kernel:", key)
+                    for row in pooled_map[key]:
+                        print(row)
+            print("Processing completed.")
+        except Exception as e:
+            print(f"Unexpected exception during processing image '{image_path}': {e}")
 
     elif sys.argv[1] == "-a":
         image_path = sys.argv[2]
@@ -127,19 +131,22 @@ if __name__ == "__main__":
             """
             for image in get_files_from_directory(image_path):
                 img_processor = cnn.ImageProcessor(image_path + "/" + image, REDUCED_WIDTH, False)
-                if img_processor.pre_processing() == None:
-                    continue
-                print("Processing image:", image)
-                polled_map = img_processor.process(shape_index)
-                for key in polled_map:
-                    for row in polled_map[key]:
-                        # convert from numpy array to list
-                        res = db.insert_data(key, row.tolist())
+                try:
+                    img_processor.pre_processing()
+                    print("Processing image:", image)
+                    polled_map = img_processor.process(shape_index)
+                    for key in polled_map:
+                        for row in polled_map[key]:
+                            # convert from numpy array to list
+                            res = db.insert_data(key, row.tolist())
+                            if res is False:
+                                print(f"❌ Error inserting data into table '{key}'")
+                        ## insert a marker for end of shape
+                        res = db.insert_data(key, [0.0, 0.0, 0.0, 0.0, 0.0])
                         if res is False:
                             print(f"❌ Error inserting data into table '{key}'")
-                    ## insert a marker for end of shape
-                    res = db.insert_data(key, [0.0, 0.0, 0.0, 0.0, 0.0])
-                    if res is False:
-                        print(f"❌ Error inserting data into table '{key}'")
+                except Exception as e:
+                    print(f"Unexpected exception during processing image '{image}': {e}")
+                    continue
     else:
         usage()
