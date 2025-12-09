@@ -37,14 +37,16 @@ def get_shape_index(shape2match):
     print(f"Error: element to train '{shape2match}' not found")
     usage()
     
-def process_and_analyse_image(image_path, verbose=False):
+def process_and_analyse_image(image_path, db, verbose=False):
     """
     process and analyse a single image
     @param image_path: path to the image file
+    @param db: database interface
+    @param verbose: verbose mode
     """
     eucl_result = {}
     cosine_result = {}
-    img_processor = cnn.ImageProcessor(image_path, REDUCED_WIDTH, verbose)
+    img_processor = cnn.ImageProcessor(image_path, REDUCED_WIDTH, False)
     try:
         img_processor.pre_processing()
         for shape_index in range(len(filters.shapes)):
@@ -99,11 +101,14 @@ if __name__ == "__main__":
         image_path = sys.argv[2]
         with DataBaseInterface('localhost','myapp','postgres','password',5432) as db:
             db.load_trained_data()
+            """
+            check if image_path is a file or a directory
+            """
             if Path(image_path).is_file():
-                process_and_analyse_image(image_path, True)
+                process_and_analyse_image(image_path, db, True)
             elif Path(image_path).is_dir():
                 for image in get_files_from_directory(image_path):
-                    process_and_analyse_image(image_path + "/" + image, False)
+                    process_and_analyse_image(image_path + "/" + image, db, False)
                     print()
             else:
                 print(f"Error: '{image_path}' is neither a valid file nor a directory")
@@ -123,9 +128,7 @@ if __name__ == "__main__":
         with data.DataBaseInterface('localhost','myapp','postgres','password',5432) as db:
             # cleanup tables
             for key in filters.shapes[shape_index]['filters']:
-                if db.create_table(key) is False:
-                    print(f"❌ Error creating table '{key}', exit training process")
-                    sys.exit(1)
+                db.create_table(key)
             """
             start processing all images in the specified folder
             """
@@ -138,13 +141,7 @@ if __name__ == "__main__":
                     for key in polled_map:
                         for row in polled_map[key]:
                             # convert from numpy array to list
-                            res = db.insert_data(key, row.tolist())
-                            if res is False:
-                                print(f"❌ Error inserting data into table '{key}'")
-                        ## insert a marker for end of shape
-                        res = db.insert_data(key, [0.0, 0.0, 0.0, 0.0, 0.0])
-                        if res is False:
-                            print(f"❌ Error inserting data into table '{key}'")
+                            db.insert_data(key, row.tolist())
                 except Exception as e:
                     print(f"Unexpected exception during processing image '{image}': {e}")
                     continue

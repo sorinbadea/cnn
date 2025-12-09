@@ -8,7 +8,12 @@ import sys
 class ConvolutionNN:
     def __init__(self, image_path, verbose=False):
         self._image_path = image_path
+        self._image = None
+        self._array = None
         self._verbose = verbose
+        self._pooled_map = None
+        self._kernel = None
+        self._activated_map = None
 
     def kernel_load(self, array):
         """
@@ -95,6 +100,7 @@ class ImageProcessor:
         self._image_path = image_path
         self._verbose = verbose
         self._reduce_width = width
+        self._engine = None
 
     def pre_processing(self):
         """

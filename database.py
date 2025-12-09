@@ -54,10 +54,9 @@ class DataBaseInterface():
             return rows
         except psycopg2.OperationalError as e:
             print(f"❌ Cannot read from database: {e}")
-            return False
         except Exception as e:
             print(f"❌ Unexpected error: {e}")
-            return False
+        return None
 
     def insert_data(self, table_name, data):
         try:
