@@ -18,7 +18,7 @@ def verdict(cosine_result, eucl_result):
     issue the final verdict
     for euclidian distance, get the maximum match from all tried filters
     for cosine similarity get the shape with the maximum similarities
-    @param cosine_result - name of the shape with the best cosine similarity
+    @param cosine_result - hash with cosine similarity/shape
     @param eucl_result; hash of euclidian matches/shape
     """
     cosine_match = max(cosine_result, key=cosine_result.get)
@@ -26,7 +26,7 @@ def verdict(cosine_result, eucl_result):
     max_eucl_percent = round(eucl_result[eucl_shape_match] * 100, 2)
 
     low_eucl_confidence  = round((2/6)*100, 2) # 33.33 %
-    min_eucl_confidence  = round((3/6)*100, 2) # 50.00 %
+    mid_eucl_confidence  = round((3/6)*100, 2) # 50.00 %
     good_eucl_confidence = round((4/6)*100, 2) # 66.66 %
     high_eucl_confidence = round((5/6)*100, 2) # 83.33 %
 
@@ -47,11 +47,11 @@ def verdict(cosine_result, eucl_result):
             # consider euclidian match if euclidian result for cosine evaluation is not important
             result = eucl_shape_match
 
-        elif round(eucl_result[cosine_match]*100, 2) >= min_eucl_confidence:
+        elif round(eucl_result[cosine_match]*100, 2) >= mid_eucl_confidence:
             # consider cosine match if euclidian is still important
             result = cosine_match
 
-    elif max_eucl_percent >= low_eucl_confidence and max_eucl_percent <= high_eucl_confidence and cosine_match == eucl_shape_match:
+    elif max_eucl_percent >= low_eucl_confidence and cosine_match == eucl_shape_match:
         # average  euclidian confidence; cosine evaluation matches
         result = cosine_match
 
