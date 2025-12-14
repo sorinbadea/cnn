@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import psycopg2
 import sys
 import filters
@@ -16,12 +15,13 @@ class DataBaseInterface():
 
     def __enter__(self):
         if self.database_connect() is False:
-            print(f"❌ Error connecting to database")
+            print("❌ Error connecting to database")
             sys.exit(1)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
          self.database_disconnect()
+         del self._trained_data
 
     def database_connect(self):
         try:
@@ -48,44 +48,22 @@ class DataBaseInterface():
             self._connection.close()
 
     def get_data(self, table_name):
-        try:
-            self._cursor.execute("SELECT samples FROM " + table_name)
-            rows = self._cursor.fetchall()
-            return rows
-        except psycopg2.OperationalError as e:
-            print(f"❌ Cannot read from database: {e}")
-        except Exception as e:
-            print(f"❌ Unexpected error: {e}")
-        return None
+        self._cursor.execute("SELECT samples FROM " + table_name)
+        rows = self._cursor.fetchall()
+        return rows
 
     def insert_data(self, table_name, data):
-        try:
-            self._cursor.execute("INSERT INTO " + table_name + " (samples) VALUES (%s)", (data,))
-            self._connection.commit()
-        except psycopg2.OperationalError as e:
-            print(f"❌ Cannot update database: {e}")
-            return False
-        except Exception as e:
-            print(f"❌ Unexpected error: {e}")
-            return False
-        return True
+        self._cursor.execute("INSERT INTO " + table_name + " (samples) VALUES (%s)", (data,))
+        self._connection.commit()
 
     def create_table(self, table_name):
-        try:
-            drop_table_query = f"DROP TABLE IF EXISTS {table_name} CASCADE;"
-            self._cursor.execute(drop_table_query)
-            print(f"✅ Table '{table_name}' dropped successfully.")
-            create_table_query = f"CREATE TABLE {table_name} (samples DOUBLE PRECISION[]);"
-            print(f"✅ Table '{table_name}' created successfully.")
-            self._cursor.execute(create_table_query)
-            self._connection .commit()
-        except psycopg2.OperationalError as e:
-            print(f"❌ Cannot update database: {e}")
-            return False
-        except Exception as e:
-            print(f"❌ Unexpected error: {e}")
-            return False
-        return True
+        drop_table_query = f"DROP TABLE IF EXISTS {table_name} CASCADE;"
+        self._cursor.execute(drop_table_query)
+        print(f"✅ Table '{table_name}' dropped successfully.")
+        create_table_query = f"CREATE TABLE {table_name} (samples DOUBLE PRECISION[]);"
+        print(f"✅ Table '{table_name}' created successfully.")
+        self._cursor.execute(create_table_query)
+        self._connection .commit()
 
     def load_trained_data(self):
         """
@@ -102,7 +80,7 @@ class DataBaseInterface():
         Returns the trained data for a specific kernel key
         @param key: kernel key
         """
-        return self._trained_data[key] or None
+        return self._trained_data[key]
 
 if __name__ == "__main__":
     db = DataBaseInterface('localhost','myapp','postgres','password',5432)
