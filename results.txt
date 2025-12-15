@@ -4,20 +4,20 @@ Euclidian evaluation confidence 83.33 % for digit 2
 Euclidian evaluation confidence 83.33 % for digit 3
 Euclidian evaluation confidence 66.67 % for digit 0
 =====> Results
---> Cosine evaluation 'digit 3'
-'digit 3' image in file 'test_images/car1.jpeg'
+--> Cosine evaluation 'digit 2'
+'digit 2' image in file 'test_images/car1.jpeg'
 
 Euclidian evaluation confidence 0.0 % for digit 1
 Euclidian evaluation confidence 33.33 % for digit 2
-Euclidian evaluation confidence 16.67 % for digit 3
+Euclidian evaluation confidence 50.0 % for digit 3
 Euclidian evaluation confidence 0.0 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 3'
-'Unknown pattern' image in file 'test_images/human1.jpeg'
+'digit 3' image in file 'test_images/human1.jpeg'
 
 Euclidian evaluation confidence 50.0 % for digit 1
 Euclidian evaluation confidence 66.67 % for digit 2
-Euclidian evaluation confidence 66.67 % for digit 3
+Euclidian evaluation confidence 50.0 % for digit 3
 Euclidian evaluation confidence 100.0 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 0'
@@ -43,7 +43,7 @@ Euclidian evaluation confidence 50.0 % for digit 0
 
 Euclidian evaluation confidence 66.67 % for digit 1
 Euclidian evaluation confidence 100.0 % for digit 2
-Euclidian evaluation confidence 83.33 % for digit 3
+Euclidian evaluation confidence 50.0 % for digit 3
 Euclidian evaluation confidence 83.33 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 2'
@@ -70,20 +70,20 @@ Euclidian evaluation confidence 100.0 % for digit 2
 Euclidian evaluation confidence 100.0 % for digit 3
 Euclidian evaluation confidence 33.33 % for digit 0
 =====> Results
---> Cosine evaluation 'digit 3'
-'digit 3' image in file 'test_images/two3.png'
+--> Cosine evaluation 'digit 2'
+'digit 2' image in file 'test_images/two3.png'
 
 Euclidian evaluation confidence 0.0 % for digit 1
 Euclidian evaluation confidence 0.0 % for digit 2
 Euclidian evaluation confidence 33.33 % for digit 3
 Euclidian evaluation confidence 0.0 % for digit 0
 =====> Results
---> Cosine evaluation 'digit 2'
-'Unknown pattern' image in file 'test_images/three72.png'
+--> Cosine evaluation 'digit 3'
+'digit 3' image in file 'test_images/three72.png'
 
 Euclidian evaluation confidence 83.33 % for digit 1
 Euclidian evaluation confidence 66.67 % for digit 2
-Euclidian evaluation confidence 50.0 % for digit 3
+Euclidian evaluation confidence 33.33 % for digit 3
 Euclidian evaluation confidence 16.67 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 1'
@@ -91,7 +91,7 @@ Euclidian evaluation confidence 16.67 % for digit 0
 
 Euclidian evaluation confidence 33.33 % for digit 1
 Euclidian evaluation confidence 83.33 % for digit 2
-Euclidian evaluation confidence 83.33 % for digit 3
+Euclidian evaluation confidence 50.0 % for digit 3
 Euclidian evaluation confidence 33.33 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 1'
@@ -99,7 +99,7 @@ Euclidian evaluation confidence 33.33 % for digit 0
 
 Euclidian evaluation confidence 50.0 % for digit 1
 Euclidian evaluation confidence 66.67 % for digit 2
-Euclidian evaluation confidence 50.0 % for digit 3
+Euclidian evaluation confidence 66.67 % for digit 3
 Euclidian evaluation confidence 100.0 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 2'
@@ -110,7 +110,7 @@ Euclidian evaluation confidence 83.33 % for digit 2
 Euclidian evaluation confidence 100.0 % for digit 3
 Euclidian evaluation confidence 50.0 % for digit 0
 =====> Results
---> Cosine evaluation 'digit 2'
+--> Cosine evaluation 'digit 3'
 'digit 3' image in file 'test_images/three77.png'
 
 Euclidian evaluation confidence 50.0 % for digit 1
@@ -123,7 +123,7 @@ Euclidian evaluation confidence 0.0 % for digit 0
 
 Euclidian evaluation confidence 50.0 % for digit 1
 Euclidian evaluation confidence 83.33 % for digit 2
-Euclidian evaluation confidence 50.0 % for digit 3
+Euclidian evaluation confidence 33.33 % for digit 3
 Euclidian evaluation confidence 16.67 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 1'
@@ -131,7 +131,7 @@ Euclidian evaluation confidence 16.67 % for digit 0
 
 Euclidian evaluation confidence 0.0 % for digit 1
 Euclidian evaluation confidence 16.67 % for digit 2
-Euclidian evaluation confidence 33.33 % for digit 3
+Euclidian evaluation confidence 16.67 % for digit 3
 Euclidian evaluation confidence 16.67 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 2'
@@ -139,9 +139,9 @@ Euclidian evaluation confidence 16.67 % for digit 0
 
 Euclidian evaluation confidence 16.67 % for digit 1
 Euclidian evaluation confidence 50.0 % for digit 2
-Euclidian evaluation confidence 100.0 % for digit 3
+Euclidian evaluation confidence 83.33 % for digit 3
 Euclidian evaluation confidence 33.33 % for digit 0
 =====> Results
---> Cosine evaluation 'digit 3'
-'digit 3' image in file 'test_images/house1.jpeg'
+--> Cosine evaluation 'digit 2'
+'digit 2' image in file 'test_images/house1.jpeg'
 
