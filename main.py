@@ -49,11 +49,11 @@ def process_and_analyse_image(image_path, db_if, verbose=False) -> None:
         try:
             img_proc.pre_processing()
             for shape in filters.shapes:
-                shape_pooled_map = img_proc.process(shape)
+                _pooled_map = img_proc.process(shape)
                 """
                 call the analyzer module
                 """
-                result = ana.evaluate(shape_pooled_map, shape, db_if, verbose)
+                result = ana.evaluate(_pooled_map, shape, db_if, verbose)
                 """
                 fill all the results for verdict processing
                 """
@@ -75,20 +75,23 @@ def process_and_analyse_image(image_path, db_if, verbose=False) -> None:
 if __name__ == "__main__":
     if len(sys.argv) <= 2:
         usage()
+
+    # load image path
+    image_path = sys.argv[2]
+
     # parse command line arguments
     if sys.argv[1] == "-d":
         """
         single image processing mode
         """
-        image_path = sys.argv[2]
         with cnn.ImageProcessor(image_path, REDUCED_WIDTH, True) as img_processor:
             try:
                 img_processor.pre_processing()
                 for shape in filters.shapes:
                     print("shape index ", shape['name'])
-                    shape_pooled_map = img_processor.process(shape)
+                    _pooled_map = img_processor.process(shape)
                     # display results
-                    for key, values in shape_pooled_map.items():
+                    for key, values in _pooled_map.items():
                         print("Pooled output for kernel:", key)
                         for row in values:
                             print(row)
@@ -97,7 +100,6 @@ if __name__ == "__main__":
                 print(f"Unexpected exception during processing image '{image_path}': {e}")
 
     elif sys.argv[1] == "-a":
-        image_path = sys.argv[2]
         with DataBaseInterface('localhost','myapp','postgres','password',5432) as db:
             db.load_trained_data()
             """
@@ -115,7 +117,6 @@ if __name__ == "__main__":
     elif sys.argv[1] == "-t":
         if len(sys.argv) < 4:
             usage()
-        image_path = sys.argv[2]
         if not Path(image_path).is_dir():
             print(f"Error: '{image_path}' is not a valid directory")
             usage()
@@ -128,7 +129,7 @@ if __name__ == "__main__":
         # database connection
         with data.DataBaseInterface('localhost','myapp','postgres','password',5432) as db:
             # cleanup tables
-            for key in shape['filters']:
+            for key in shape['filters'].items():
                 db.create_table(key)
             """
             start processing all images in the specified folder
@@ -138,8 +139,8 @@ if __name__ == "__main__":
                     try:
                         img_processor.pre_processing()
                         print("Processing image:", image)
-                        shape_polled_map = img_processor.process(shape)
-                        for key, values in shape_polled_map.items():
+                        _polled_map = img_processor.process(shape)
+                        for key, values in _polled_map.items():
                             for row in values:
                                 # convert from numpy array to list
                                 db.insert_data(key, row.tolist())
