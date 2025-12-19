@@ -84,7 +84,7 @@ if __name__ == "__main__":
         """
         single image processing mode
         """
-        with cnn.ImageProcessor(image_path, REDUCED_WIDTH, True) as img_processor:
+        with cnn.ImageProcessor(image_path, REDUCED_WIDTH, False) as img_processor:
             try:
                 img_processor.pre_processing()
                 for shape in filters.shapes:
@@ -129,7 +129,7 @@ if __name__ == "__main__":
         # database connection
         with data.DataBaseInterface('localhost','myapp','postgres','password',5432) as db:
             # cleanup tables
-            for key in shape['filters'].items():
+            for key in shape['filters']:
                 db.create_table(key)
             """
             start processing all images in the specified folder

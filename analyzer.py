@@ -61,90 +61,99 @@ def display_cosine_result(output):
             similarity.append(cos)
         print(f"Cosine max similarity '{max(similarity)}' for kernel '{key}'")
 
-"""
-using euclidean distance
-"""
-
-def euclidean_distance(vec1, vec2):
-    """Calculate Euclidean distance between two vectors"""
-    return np.sqrt(np.sum((np.array(vec1) - np.array(vec2)) ** 2))
-
-def is_match_distance(trained_values, new_values):
-    """ Check if new values match within distance threshold """
-    distance = euclidean_distance(trained_values, new_values)
-    nv_average = np.sum(np.array(new_values))/len(new_values)
-    threshold = nv_average * 0.09
-    return distance < threshold
-
-def iterate_in_samples(trained_filter, input_pooled):
+class Euclidian:
     """
-    Generator to iterate through trained samples and input pooled data
+    class implementing euclidian distance evaluation
+    between trained data and new input pooled data
     """
-    for pool_row in input_pooled:
-        for train_row in trained_filter:
-            yield pool_row, train_row
+    def __init__(self, training_data, input_pooled) -> None:
+        self._trained_filter = training_data
+        self._input_pooled = input_pooled
+        self._euclidean_distance = lambda vec1, vec2: np.linalg.norm(vec1 - vec2)
 
-def evaluate_euclidian(trained_filter, input_pooled):
-    """
-    Evaluates a single pooled filter result against trained
-    patterns using euclidean distance; returns a touple of
-    matches and not matches
-    @param trained_filter: list of trained samples for a kernel
-    @param input_pooled: new input samples to evaluate
-    """
-    matches = 0
-    not_matches = 0
-    for pooled_row, trained_row in iterate_in_samples(trained_filter, input_pooled):
-        match = is_match_distance(trained_row, pooled_row)
-        matches += int(match)
-        not_matches += int(not match)
-    return matches, not_matches
+    def __enter__(self) -> 'Euclidian':
+        return self
 
-def evaluate(pooled_maps, shape, db, verbose=False):
+    def __exit__(self, exc_type, exc_val, exc_tb)-> None:
+        del self._trained_filter
+        del self._input_pooled
+
+    def iterate_in_samples(self) -> tuple:
+        """
+        Generator to iterate through trained samples and input pooled data
+        """
+        for _pool_row in self._input_pooled:
+            for _train_row in self._trained_filter:
+                if _pool_row is not None and _train_row is not None:
+                    yield _pool_row, _train_row
+
+    def evaluate_euclidian(self) -> tuple:
+        """
+        Evaluates a single pooled filter result against trained
+        patterns using euclidean distance; returns a touple of
+        matches and not matches
+        @param trained_filter: list of trained samples for a kernel
+        @param input_pooled: new input samples to evaluate
+        """
+        _matches = 0
+        _iterations = 0
+        for _pooled_row, _trained_row in self.iterate_in_samples():
+            _iterations += 1
+            _distance = self._euclidean_distance(_trained_row, _pooled_row)
+            _nv_average = np.sum(np.array(_pooled_row))/len(_pooled_row)
+            _threshold = _nv_average * 0.09
+            _matches += int(_distance < _threshold)
+
+        return _matches, _iterations - _matches
+
+def evaluate(pooled_maps, shape, db, verbose=False) -> dict:
     """
-    Returns the euclidian evaluation confidence (percent) and 
-    the total cosine similarity for the shape index
+    Returns a dict of two maps:
+    a map containing the euclidian evaluation confidence per shape
+    a map containing the cosine max similarities per shape
     @param pooled_maps: map of kernel shapes to pooled outputs
     @param shape: a shape dictionary from filters.py
     @param db: database interface to get trained data
     @param verbose: verbose mode
     """
-    euclidian_result = {}
-    cosine_result = {}
+    _euclidian_result = {}
+    _cosine_result = {}
     for key in pooled_maps:
         """
         get the trained pooled maps for each filter
         """
-        trained_filter = db.get_trained_data(key)
+        _trained_filter = db.get_trained_data(key)
+        _trained_filter = np.array(_trained_filter)
         # evaluate euclidian distance and cosine similarity
         # -------------------------------------------------
-        euclidian_result[key] = evaluate_euclidian(trained_filter, pooled_maps[key])
-        cosine_result[key] = evaluate_cosine(trained_filter, pooled_maps[key])
+        with Euclidian(_trained_filter, pooled_maps[key]) as eucl:
+            _euclidian_result[key] = eucl.evaluate_euclidian()
+        _cosine_result[key] = evaluate_cosine(_trained_filter, pooled_maps[key])
 
     if verbose:
         print(f"analyse result for shape '{shape['name']}'")
         print("========================================")
         # display the euclidian evaluation
-        print(euclidian_result)
+        print(_euclidian_result)
         # display the cosine evaluation
-        display_cosine_result(cosine_result)
+        display_cosine_result(_cosine_result)
 
     ## evaluate the cosine results
-    cosine_eval  = 0
-    for key in cosine_result.keys():
-        similarity = []
-        for c in cosine_result[key]:
-            similarity.append(c)
-        cosine_eval += max(similarity)
+    _cosine_eval  = 0
+    for key in _cosine_result.keys():
+        _similarity = []
+        for c in _cosine_result[key]:
+            _similarity.append(c)
+        _cosine_eval += max(_similarity)
     if verbose:
-        print("total of cosine kernel similarities", cosine_eval)
+        print("total of cosine kernel similarities", _cosine_eval)
 
     ## evaluate the euclidian results
-    total_matches = sum(1 for m in [ euclidian_result[key][0] for key in euclidian_result ] if m > 0)
-    result = {}
-    result['euclidian'] = total_matches / len(euclidian_result) if len(euclidian_result) > 0 else 0
-    result['cosine'] = cosine_eval
-    return result
+    _total_matches = sum(1 for m in [ _euclidian_result[key][0] for key in _euclidian_result ] if m > 0)
+    _result = {}
+    _result['euclidian'] = _total_matches / len(_euclidian_result) if len(_euclidian_result) > 0 else 0
+    _result['cosine'] = _cosine_eval
+    return _result
 
 # the more random changes comparing the trained data, the more
 # low confidence, even if the values are 10x higher than trained data,

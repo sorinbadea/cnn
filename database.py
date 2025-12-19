@@ -61,8 +61,8 @@ class DataBaseInterface():
         self._cursor.execute(drop_table_query)
         print(f"✅ Table '{table_name}' dropped successfully.")
         create_table_query = f"CREATE TABLE {table_name} (samples DOUBLE PRECISION[]);"
-        print(f"✅ Table '{table_name}' created successfully.")
         self._cursor.execute(create_table_query)
+        print(f"✅ Table '{table_name}' created successfully.")
         self._connection .commit()
 
     def load_trained_data(self):
@@ -85,7 +85,7 @@ class DataBaseInterface():
 if __name__ == "__main__":
     db = DataBaseInterface('localhost','myapp','postgres','password',5432)
     db.database_connect()
-    res = db.get_data('digit_1_filter_1')
+    res = db.get_data('digit_3_filter_1')
     for row in res:
         print("res=", row)
     db.database_disconnect()
