@@ -101,8 +101,9 @@ class Euclidian:
             _iterations += 1
             _distance = self._euclidean_distance(_trained_row, _pooled_row)
             _nv_average = np.sum(np.array(_pooled_row))/len(_pooled_row)
-            _threshold = _nv_average * 0.09
-            _matches += int(_distance < _threshold)
+            _matches += int(_distance < _nv_average * 0.09)
+            if _matches >= 2:
+                break
 
         return _matches, _iterations - _matches
 

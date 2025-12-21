@@ -1,3 +1,4 @@
+import sys
 import asyncio
 import filters
 
@@ -13,6 +14,10 @@ async def run_task(folder, shape):
     )
     # Read output line by line asynchronously
     while True:
+        line = await process.stderr.readline()
+        if line:
+            print(line.strip())
+            sys.exit(1)
         line = await process.stdout.readline()
         if not line:
             break

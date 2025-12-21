@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 from pathlib import Path
 import filters
 import cnn
@@ -84,7 +85,7 @@ if __name__ == "__main__":
         """
         single image processing mode
         """
-        with cnn.ImageProcessor(image_path, REDUCED_WIDTH, False) as img_processor:
+        with cnn.ImageProcessor(image_path, REDUCED_WIDTH, True) as img_processor:
             try:
                 img_processor.pre_processing()
                 for shape in filters.shapes:
@@ -100,6 +101,7 @@ if __name__ == "__main__":
                 print(f"Unexpected exception during processing image '{image_path}': {e}")
 
     elif sys.argv[1] == "-a":
+        _start = time.time()
         with DataBaseInterface('localhost','myapp','postgres','password',5432) as db:
             db.load_trained_data()
             """
@@ -113,6 +115,8 @@ if __name__ == "__main__":
                     print()
             else:
                 print(f"Error: '{image_path}' is neither a valid file nor a directory")
+        _end = time.time() - _start
+        print(f"Analyse time: {_end:.4f}s")
 
     elif sys.argv[1] == "-t":
         if len(sys.argv) < 4:
@@ -129,7 +133,7 @@ if __name__ == "__main__":
         # database connection
         with data.DataBaseInterface('localhost','myapp','postgres','password',5432) as db:
             # cleanup tables
-            for key in shape['filters']:
+            for key in shape['filters'].keys():
                 db.create_table(key)
             """
             start processing all images in the specified folder
