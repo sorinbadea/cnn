@@ -102,8 +102,8 @@ class Euclidian:
             _distance = self._euclidean_distance(_trained_row, _pooled_row)
             _nv_average = np.sum(np.array(_pooled_row))/len(_pooled_row)
             _matches += int(_distance < _nv_average * 0.09)
-            if _matches >= 2:
-                break
+            #TODO, add a fast euclidian match if _matches >= 2:
+            #    break
 
         return _matches, _iterations - _matches
 

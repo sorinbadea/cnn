@@ -85,7 +85,7 @@ if __name__ == "__main__":
         """
         single image processing mode
         """
-        with cnn.ImageProcessor(image_path, REDUCED_WIDTH, True) as img_processor:
+        with cnn.ImageProcessor(image_path, REDUCED_WIDTH, verbose=True) as img_processor:
             try:
                 img_processor.pre_processing()
                 for shape in filters.shapes:
@@ -108,10 +108,10 @@ if __name__ == "__main__":
             check if image_path is a file or a directory
             """
             if Path(image_path).is_file():
-                process_and_analyse_image(image_path, db, True)
+                process_and_analyse_image(image_path, db, verbose=True)
             elif Path(image_path).is_dir():
                 for image in get_files_from_directory(image_path):
-                    process_and_analyse_image(image_path + "/" + image, db, False)
+                    process_and_analyse_image(image_path + "/" + image, db, verbose=False)
                     print()
             else:
                 print(f"Error: '{image_path}' is neither a valid file nor a directory")
@@ -139,7 +139,7 @@ if __name__ == "__main__":
             start processing all images in the specified folder
             """
             for image in get_files_from_directory(image_path):
-                with cnn.ImageProcessor(image_path + "/" + image, REDUCED_WIDTH, False) as img_processor:
+                with cnn.ImageProcessor(image_path + "/" + image, REDUCED_WIDTH, verbose=False) as img_processor:
                     try:
                         img_processor.pre_processing()
                         print("Processing image:", image)

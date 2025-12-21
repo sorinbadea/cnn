@@ -2,29 +2,22 @@
 verdict module, issue the final verdict based on analyzer results
 """
 
-def first_evaluation(eucl_results, shape_with_max_eucl, cosine_result, high_eucl_evaluation):
+def check_for_100_shape(eucl_results, shape_with_max_eucl):
     """
     check if a unique shape has 100 % euclidian confidence
-    check the max cosine evaluation among shapes having high euclidian confidence
     @param eucl_results - hash of euclidian results/shape
     @param shape_with_max_eucl - shape name which maximum euclidian confidence
-    @param cosine_result - hash of cosine results/shape
-    @param high_eucl_evaluation - threshold for high euclidian evaluation
     """
     shapes_with_100_eucl_results = [key for key in eucl_results if round(eucl_results[key]*100, 2) == 100.0]
     if len(shapes_with_100_eucl_results) == 1 and shapes_with_100_eucl_results[0] == shape_with_max_eucl:
         return shape_with_max_eucl
-
-    shapes_with_good_eucl_results = dict([(key, cosine_result[key]) for key in eucl_results if round(eucl_results[key]*100, 2) >= high_eucl_evaluation])
-    print(f"Shapes with good euclidian results: {shapes_with_good_eucl_results}")
-    if len(shapes_with_good_eucl_results) >= 2:
-        return max(shapes_with_good_eucl_results, key=shapes_with_good_eucl_results.get)
 
     return None
 
 def verdict(cosine_result, eucl_result):
     """
     issue the final verdict following the evaluation results:
+    - if cosine evaluation is low for all shapes, return "Unknown pattern"
     - if one shape has 100 % euclidian confidence, ignore cosine evaluation
     - if two shapes have high euclidian confidence ( >= 83.33 ) take the biggest cosine evaluation
     - if max euclidian result has 66.66 % and the cosine evaluation matches, take that shape
@@ -47,7 +40,11 @@ def verdict(cosine_result, eucl_result):
 
     result = "Unknown pattern"
 
-    __shape = first_evaluation(eucl_result, eucl_shape_match, cosine_result, high_eucl_confidence)
+    # do not consider any results if cosine evaluation is low
+    if max(cosine_result.values()) < 5.999:
+        return result
+
+    __shape = check_for_100_shape(eucl_result, eucl_shape_match)
     if __shape != None:
         # only one shape has 100 % euclidian confidence, ignore cosine evaluation
         result = __shape

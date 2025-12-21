@@ -5,17 +5,15 @@ Euclidian evaluation confidence 83.33 % for digit 3
 Euclidian evaluation confidence 66.67 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 2'
-Shapes with good euclidian results: {'digit 2': np.float64(5.999396940706501), 'digit 3': np.float64(5.998886496339106)}
 'digit 2' image in file 'test_images/car1.jpeg'
 
 Euclidian evaluation confidence 0.0 % for digit 1
 Euclidian evaluation confidence 33.33 % for digit 2
-Euclidian evaluation confidence 50.0 % for digit 3
+Euclidian evaluation confidence 16.67 % for digit 3
 Euclidian evaluation confidence 0.0 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 3'
-Shapes with good euclidian results: {}
-'digit 3' image in file 'test_images/human1.jpeg'
+'Unknown pattern' image in file 'test_images/human1.jpeg'
 
 Euclidian evaluation confidence 50.0 % for digit 1
 Euclidian evaluation confidence 66.67 % for digit 2
@@ -33,7 +31,6 @@ Euclidian evaluation confidence 16.67 % for digit 3
 Euclidian evaluation confidence 16.67 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 2'
-Shapes with good euclidian results: {}
 'Unknown pattern' image in file 'test_images/house2.png'
 
 Euclidian evaluation confidence 16.67 % for digit 1
@@ -42,7 +39,6 @@ Euclidian evaluation confidence 83.33 % for digit 3
 Euclidian evaluation confidence 50.0 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 3'
-Shapes with good euclidian results: {'digit 3': np.float64(5.999461164592209)}
 'digit 3' image in file 'test_images/three_3.png'
 
 Euclidian evaluation confidence 66.67 % for digit 1
@@ -59,16 +55,14 @@ Euclidian evaluation confidence 0.0 % for digit 3
 Euclidian evaluation confidence 0.0 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 2'
-Shapes with good euclidian results: {}
 'Unknown pattern' image in file 'test_images/zero17.png'
 
 Euclidian evaluation confidence 66.67 % for digit 1
 Euclidian evaluation confidence 50.0 % for digit 2
-Euclidian evaluation confidence 83.33 % for digit 3
+Euclidian evaluation confidence 66.67 % for digit 3
 Euclidian evaluation confidence 16.67 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 2'
-Shapes with good euclidian results: {'digit 3': np.float64(5.999919865623668)}
 'digit 2' image in file 'test_images/two_11.png'
 
 Euclidian evaluation confidence 33.33 % for digit 1
@@ -77,16 +71,14 @@ Euclidian evaluation confidence 100.0 % for digit 3
 Euclidian evaluation confidence 33.33 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 2'
-Shapes with good euclidian results: {'digit 2': np.float64(5.999976517520923), 'digit 3': np.float64(5.999973725337723)}
 'digit 2' image in file 'test_images/two3.png'
 
 Euclidian evaluation confidence 0.0 % for digit 1
 Euclidian evaluation confidence 0.0 % for digit 2
-Euclidian evaluation confidence 33.33 % for digit 3
+Euclidian evaluation confidence 50.0 % for digit 3
 Euclidian evaluation confidence 0.0 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 3'
-Shapes with good euclidian results: {}
 'digit 3' image in file 'test_images/three72.png'
 
 Euclidian evaluation confidence 100.0 % for digit 1
@@ -103,7 +95,6 @@ Euclidian evaluation confidence 50.0 % for digit 3
 Euclidian evaluation confidence 33.33 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 1'
-Shapes with good euclidian results: {'digit 2': np.float64(5.999849153249569)}
 'digit 1' image in file 'test_images/one70.png'
 
 Euclidian evaluation confidence 50.0 % for digit 1
@@ -128,8 +119,7 @@ Euclidian evaluation confidence 0.0 % for digit 3
 Euclidian evaluation confidence 0.0 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 1'
-Shapes with good euclidian results: {'digit 2': np.float64(5.998168159160267)}
-'digit 1' image in file 'test_images/one_32.png'
+'Unknown pattern' image in file 'test_images/one_32.png'
 
 Euclidian evaluation confidence 50.0 % for digit 1
 Euclidian evaluation confidence 83.33 % for digit 2
@@ -137,8 +127,7 @@ Euclidian evaluation confidence 33.33 % for digit 3
 Euclidian evaluation confidence 16.67 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 2'
-Shapes with good euclidian results: {'digit 2': np.float64(5.998628880686596)}
-'digit 2' image in file 'test_images/human2.jpeg'
+'Unknown pattern' image in file 'test_images/human2.jpeg'
 
 Euclidian evaluation confidence 0.0 % for digit 1
 Euclidian evaluation confidence 16.67 % for digit 2
@@ -146,16 +135,14 @@ Euclidian evaluation confidence 16.67 % for digit 3
 Euclidian evaluation confidence 16.67 % for digit 0
 =====> Results
 --> Cosine evaluation 'digit 2'
-Shapes with good euclidian results: {}
 'Unknown pattern' image in file 'test_images/ship.jpeg'
 
 Euclidian evaluation confidence 33.33 % for digit 1
 Euclidian evaluation confidence 50.0 % for digit 2
-Euclidian evaluation confidence 83.33 % for digit 3
+Euclidian evaluation confidence 66.67 % for digit 3
 Euclidian evaluation confidence 33.33 % for digit 0
 =====> Results
---> Cosine evaluation 'digit 2'
-Shapes with good euclidian results: {'digit 3': np.float64(5.999459738507238)}
-'digit 2' image in file 'test_images/house1.jpeg'
+--> Cosine evaluation 'digit 3'
+'digit 3' image in file 'test_images/house1.jpeg'
 
-Analyse time: 4.8261s
+Analyse time: 5.2940s
