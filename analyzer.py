@@ -6,56 +6,69 @@ import numpy as np
 """
 using cosine
 """
-
-def cosine_similarity(trained_data, new_data):
+class Cosine:
     """
-    evaluare cosine similarity new data vs trained data
-    @param: trained data; data already processed
-    @param new_data : new data obtained via convolution
+    class implementing cosine similarity evaluation
+    between trained data and new input pooled data
     """
-    vectA = np.array(new_data)
-    vectB = np.array(trained_data)
-    # Calculate norms
-    norm_A = np.linalg.norm(vectA)
-    norm_B = np.linalg.norm(vectB)
-    # Check if either magnitude is zero or very close to zero
-    if norm_A == 0.0 or norm_B == 0.0:
-        return 0.0
-    return np.dot(vectA, vectB) / (norm_A * norm_B)
+    def __init__(self, training_data, new_data) -> None:
+        self._trained_data = training_data
+        self._new_data = new_data
 
-def get_similarity(trained_data, new_data):
-    """
-    returns the max similarity for the given input and trained data
-    @param new_data : new data obtained via convolution
-    @param: trained data; data already processed
-    """
-    results = []
-    for trained_row in trained_data:
-        similarity = cosine_similarity(trained_row, new_data)
-        results.append((trained_row, similarity))
-    # Sort by similarity in descending order
-    results.sort(key=lambda x: x[1], reverse=True)
-    # results [0][1] is highest similarity among the whole set
-    return results[0][1]
+    def __enter__(self) -> 'Cosine':
+        return self
 
-def evaluate_cosine(trained_data, new_data, verbose=False):
-    results = []
-    t_data = [ t_row[0] for t_row in list(trained_data) ]
-    if verbose:
-        print("pooled_data=", new_data.tolist())
-        print("trained_data=", t_data)
-    for pool_row in new_data.tolist():
-        results.append(get_similarity(t_data, pool_row))
-    return results
+    def __exit__(self, exc_type, exc_val, exc_tb)-> None:
+        del self._trained_data
+        del self._new_data
 
-def display_cosine_result(output):
+    def cosine_similarity(self, trained_data, new_data):
+        """
+        evaluare cosine similarity new data vs trained data
+        @param: trained data; data already processed
+        @param new_data : new data obtained via convolution
+        """
+        vectA = np.array(new_data)
+        vectB = np.array(trained_data)
+        # Calculate norms
+        norm_A = np.linalg.norm(vectA)
+        norm_B = np.linalg.norm(vectB)
+        # Check if either magnitude is zero or very close to zero
+        if norm_A == 0.0 or norm_B == 0.0:
+            return 0.0
+        return np.dot(vectA, vectB) / (norm_A * norm_B)
+
+    def get_similarity(self, trained_data, new_data):
+        """
+        returns the max similarity for the given input and trained data
+        @param new_data : new data obtained via convolution
+        @param: trained data; data already processed
+        """
+        results = []
+        for trained_row in trained_data:
+            similarity = self.cosine_similarity(trained_row, new_data)
+            results.append((trained_row, similarity))
+        # Sort by similarity in descending order
+        results.sort(key=lambda x: x[1], reverse=True)
+        # results [0][1] is highest similarity among the whole set
+        return results[0][1]
+
+    def evaluate_cosine(self):
+        results = []
+        t_data = [ t_row[0] for t_row in list(self._trained_data) ]
+        # debug
+        # print("pooled_data=", self._new_data.tolist())
+        # print("trained_data=", t_data)
+        for pool_row in self._new_data.tolist():
+            results.append(self.get_similarity(t_data, pool_row))
+        return results
+
+def display_cosine_result(output) -> None:
     """
     show the max similarity from output
     @param output: cosine similarity for each applied kernel, (filter)
     """
     for key in output:
-        #print("")
-        #print("key", key)
         similarity = []
         for cos in output[key]:
             similarity.append(cos)
@@ -67,7 +80,7 @@ class Euclidian:
     between trained data and new input pooled data
     """
     def __init__(self, training_data, input_pooled) -> None:
-        self._trained_filter = training_data
+        self._trained_data = training_data
         self._input_pooled = input_pooled
         self._euclidean_distance = lambda vec1, vec2: np.linalg.norm(vec1 - vec2)
 
@@ -75,7 +88,7 @@ class Euclidian:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb)-> None:
-        del self._trained_filter
+        del self._trained_data
         del self._input_pooled
 
     def iterate_in_samples(self) -> tuple:
@@ -83,7 +96,7 @@ class Euclidian:
         Generator to iterate through trained samples and input pooled data
         """
         for _pool_row in self._input_pooled:
-            for _train_row in self._trained_filter:
+            for _train_row in self._trained_data:
                 if _pool_row is not None and _train_row is not None:
                     yield _pool_row, _train_row
 
@@ -102,14 +115,12 @@ class Euclidian:
             _distance = self._euclidean_distance(_trained_row, _pooled_row)
             _nv_average = np.sum(np.array(_pooled_row))/len(_pooled_row)
             _matches += int(_distance < _nv_average * 0.09)
-            #TODO, add a fast euclidian match if _matches >= 2:
-            #    break
-
+            #TODO, add a fast euclidian match
         return _matches, _iterations - _matches
 
 def evaluate(pooled_maps, shape, db, verbose=False) -> dict:
     """
-    Returns a dict of two maps:
+    Returns a dict containing two maps:
     a map containing the euclidian evaluation confidence per shape
     a map containing the cosine max similarities per shape
     @param pooled_maps: map of kernel shapes to pooled outputs
@@ -129,7 +140,9 @@ def evaluate(pooled_maps, shape, db, verbose=False) -> dict:
         # -------------------------------------------------
         with Euclidian(_trained_filter, pooled_maps[key]) as eucl:
             _euclidian_result[key] = eucl.evaluate_euclidian()
-        _cosine_result[key] = evaluate_cosine(_trained_filter, pooled_maps[key])
+
+        with Cosine(_trained_filter, pooled_maps[key]) as cosine:
+            _cosine_result[key] = cosine.evaluate_cosine()
 
     if verbose:
         print(f"analyse result for shape '{shape['name']}'")
@@ -141,9 +154,9 @@ def evaluate(pooled_maps, shape, db, verbose=False) -> dict:
 
     ## evaluate the cosine results
     _cosine_eval  = 0
-    for key in _cosine_result.keys():
+    for key, values in _cosine_result.items():
         _similarity = []
-        for c in _cosine_result[key]:
+        for c in values:
             _similarity.append(c)
         _cosine_eval += max(_similarity)
     if verbose:
